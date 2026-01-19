@@ -1,11 +1,20 @@
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{{ page.title }} | {{ site.title }}</title>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page.title }} | {{ site.title }}</title>
 
-  {% include person-jsonld.html %}
+    {% include person-jsonld.html %}
 
-  {% if page.url == "/about/" %}
-    {% include profilepage-about-jsonld.html %}
-  {% endif %}
-</head>
+    {% if page.url == "/about/" %}
+      {% include profilepage-about-jsonld.html %}
+    {% endif %}
+  </head>
+
+  <body>
+    <main>
+      {{ content }}
+    </main>
+  </body>
+</html>
