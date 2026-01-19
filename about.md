@@ -6,8 +6,7 @@ permalink: /about/
 
 # Jon Villasurda Jr.
 
-Jon Villasurda Jr. (Okemos, Michigan) is a Senior Principal Consultant at Mercer.  
-Not Jon Villasurda Sr.
+Jon Villasurda Jr. (Okemos, Michigan) is a Senior Principal Consultant at Mercer. Not Jon Villasurda Sr.
 
 ## Authoritative profiles
 - LinkedIn: https://www.linkedin.com/in/jon-villasurda-jr-54817619
