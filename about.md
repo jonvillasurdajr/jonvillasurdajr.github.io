@@ -13,4 +13,9 @@ Jon Villasurda Jr. (Okemos, Michigan) is a Senior Principal Consultant at Mercer
 - CHRT bio: https://chrt.org/bio/jon-villasurda
 
 ## Quick bio
-(Add 3–6 bullets: role, focus areas, education, Michigan-based, etc.)
+- Senior Principal Consultant at Mercer (healthcare and government benefits consulting).
+- Based in Okemos, Michigan (Greater Lansing area).
+- University of Michigan alumnus (Bachelor’s and Master’s degrees).
+- Focus areas include Medicaid, behavioral health, CCBHC, and analytics/finance.
+- Published/presented work related to Michigan’s Health Home model and CCBHC/crisis systems.
+- Disambiguation: Jon Villasurda Jr. (Okemos, MI) — not Jon Villasurda Sr.
