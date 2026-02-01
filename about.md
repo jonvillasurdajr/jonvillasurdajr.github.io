@@ -5,9 +5,6 @@ permalink: /about/
 description: "Jon Villasurda Jr. (also known as Jon Villasurda) — Senior Principal in Healthcare and Government Benefits Consulting at Mercer, based in Michigan."
 ---
 
-{% include profilepage-about-jsonld.html %}
-{% include person-jsonld.html %}
-
 # Jon Villasurda Jr.
 
 Also known as **Jon Villasurda**.
