@@ -1,0 +1,10 @@
+<!-- WebSite JSON-LD (sitewide) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "{{ '/#website' | absolute_url }}",
+  "url": "{{ '/' | absolute_url }}",
+  "name": "{{ site.title | escape }}"
+}
+</script>
