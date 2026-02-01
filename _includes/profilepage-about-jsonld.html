@@ -1,11 +1,20 @@
+<!-- ProfilePage JSON-LD (About page) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "ProfilePage",
-  "@id": "https://jonvillasurdajr.github.io/about/#profilepage",
-  "url": "https://jonvillasurdajr.github.io/about/",
-  "name": "Jon Villasurda Jr. (Okemos, MI)",
-  "mainEntity": { "@id": "https://jonvillasurdajr.github.io/#me" },
-  "about": { "@id": "https://jonvillasurdajr.github.io/#me" }
+  "@id": "{{ page.url | absolute_url }}#profilepage",
+  "url": "{{ page.url | absolute_url }}",
+  "name": "{{ page.title | escape }}",
+  "description": "{{ page.description | strip_newlines | escape }}",
+  "about": {
+    "@id": "{{ '/#person' | absolute_url }}"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "@id": "{{ '/#website' | absolute_url }}",
+    "url": "{{ '/' | absolute_url }}",
+    "name": "{{ site.title | escape }}"
+  }
 }
 </script>
