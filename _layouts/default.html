@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ page.title }} | {{ site.title }}</title>
 
+    {% include website-jsonld.html %}
+
     {% if page.url == "/about/" %}
       {% include person-jsonld.html %}
       {% include profilepage-about-jsonld.html %}
