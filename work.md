@@ -1,0 +1,32 @@
+---
+layout: default
+title: Work of Jon Villasurda Jr.
+permalink: /work/
+description: "Professional background of Jon Villasurda Jr., a Senior Principal at Mercer in Okemos, Michigan."
+---
+
+# Work of Jon Villasurda Jr.
+
+Jon Villasurda Jr. works in healthcare and government benefits consulting with a focus on public sector strategy, Medicaid policy, and behavioral health system design.
+
+## Current work
+
+Jon Villasurda Jr. is a Senior Principal at Mercer in Okemos, Michigan.
+
+His work centers on:
+
+- Medicaid and healthcare policy
+- Behavioral health services and delivery system design
+- Public sector consulting
+- Program evaluation, analytics, and finance
+
+## Previous organizations
+
+- Michigan Department of Health and Human Services
+- Michigan Primary Care Association
+
+## Online profiles
+
+- [GitHub profile](https://github.com/jonvillasurdajr)
+- [LinkedIn profile](https://www.linkedin.com/in/jon-villasurda-jr-54817619)
+- [CHRT biography](https://chrt.org/bio/jon-villasurda/)

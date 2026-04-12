@@ -11,6 +11,8 @@ Jon Villasurda Jr., also known professionally as Jon Villasurda, is a Senior Pri
 This site is intended to identify Jon Villasurda Jr. as a distinct person and professional profile, separate from other individuals with the same name.
 
 [About and disambiguation](/about/)
+[Professional background](/work/)
+[Publications and presentations](/publications/)
 
 ## Professional focus
 

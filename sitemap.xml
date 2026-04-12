@@ -10,4 +10,10 @@ permalink: /sitemap.xml
   <url>
     <loc>{{ '/about/' | absolute_url }}</loc>
   </url>
+  <url>
+    <loc>{{ '/work/' | absolute_url }}</loc>
+  </url>
+  <url>
+    <loc>{{ '/publications/' | absolute_url }}</loc>
+  </url>
 </urlset>
