@@ -30,3 +30,8 @@ His work centers on:
 - [GitHub profile](https://github.com/jonvillasurdajr)
 - [LinkedIn profile](https://www.linkedin.com/in/jon-villasurda-jr-54817619)
 - [CHRT biography](https://chrt.org/bio/jon-villasurda/)
+
+## Recent featured work
+
+- [Mercer behavioral health video series: CCBHC Model](https://www.mercer-government.mercer.com/our-insights.html)
+- [Direct video link](https://bcove.video/3OfDsNN)

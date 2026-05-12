@@ -20,6 +20,12 @@ This page collects selected publications, reports, and presentations associated 
 - [Michigan Psychiatric Care Improvement Project update](https://cmham.org/wp-content/uploads/2021/05/Michigan-Psychiatric-Care-Improvement-Project-Update-5.21_Short-Version.pdf)
 - [eConsent presentation](https://mihin.org/wp-content/uploads/2021/03/eConsent-Presentation.pdf)
 
+## Videos and featured discussions
+
+- [Mercer behavioral health video series: CCBHC Model](https://www.mercer-government.mercer.com/our-insights.html)
+  Public Mercer feature highlighting a discussion with Dr. Jason Vogler, Jon Villasurda, and Toby Ramsdell on implementing and sustaining CCBHCs.
+- [Watch the CCBHC Model video](https://bcove.video/3OfDsNN)
+
 ## Identity note
 
 These materials are included to help identify Jon Villasurda Jr. as a professional in healthcare policy and consulting in Michigan, separate from other individuals with the same name.
