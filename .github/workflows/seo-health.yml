@@ -33,7 +33,9 @@ jobs:
           )
 
           for url in "${urls[@]}"; do
-            html="$(curl --fail --silent --show-error "$url")"
+            html="$(curl --fail --silent --show-error \
+              --retry 12 --retry-delay 15 --retry-all-errors \
+              "$url")"
             printf 'Checking %s\n' "$url"
             printf '%s' "$html" | grep -Fq '<meta name="description"'
             printf '%s' "$html" | grep -Fq '<link rel="canonical"'
@@ -43,10 +45,15 @@ jobs:
       - name: Check identity schema and discovery files
         run: |
           set -euo pipefail
-          home="$(curl --fail --silent --show-error "https://jonvillasurdajr.github.io/")"
-          sitemap="$(curl --fail --silent --show-error "https://jonvillasurdajr.github.io/sitemap.xml")"
-          robots="$(curl --fail --silent --show-error "https://jonvillasurdajr.github.io/robots.txt")"
-          key="$(curl --fail --silent --show-error "https://jonvillasurdajr.github.io/indexnow-key.txt")"
+          curl_live() {
+            curl --fail --silent --show-error \
+              --retry 12 --retry-delay 15 --retry-all-errors "$1"
+          }
+
+          home="$(curl_live "https://jonvillasurdajr.github.io/")"
+          sitemap="$(curl_live "https://jonvillasurdajr.github.io/sitemap.xml")"
+          robots="$(curl_live "https://jonvillasurdajr.github.io/robots.txt")"
+          key="$(curl_live "https://jonvillasurdajr.github.io/indexnow-key.txt")"
 
           printf '%s' "$home" | grep -Fq '"@type": "Person"'
           printf '%s' "$home" | grep -Fq '"name": "Jon Villasurda Jr."'
