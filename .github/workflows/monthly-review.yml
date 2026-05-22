@@ -1,0 +1,55 @@
+name: Monthly SEO Review
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 14 1 * *"
+
+permissions:
+  issues: write
+
+jobs:
+  open-review-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create monthly review issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const month = new Date().toISOString().slice(0, 7);
+            const title = `Personal SEO review ${month}`;
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: "seo-review",
+              per_page: 100
+            });
+
+            if (existing.data.some((issue) => issue.title === title)) {
+              core.info(`${title} already exists.`);
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              labels: ["seo-review"],
+              body: [
+                "## Search queries",
+                "- [ ] `Jon Villasurda`",
+                "- [ ] `Jon Villasurda Jr`",
+                "- [ ] `Jon Villasurda Mercer`",
+                "- [ ] `Jon Villasurda CCBHC`",
+                "",
+                "## Search Console",
+                "- [ ] Inspect the homepage, `/ccbhc/`, `/media/`, `/notes/`, and any newly updated pages.",
+                "- [ ] Record indexed pages, impressions, and snippets that need attention.",
+                "",
+                "## Content follow-up",
+                "- [ ] Add any new Mercer, conference, publication, media, or presentation reference.",
+                "- [ ] Record any professional result that should be linked from the site.",
+                "- [ ] Close this issue after notes are captured."
+              ].join("\n")
+            });
