@@ -19,12 +19,18 @@ This page collects selected publications, reports, and presentations associated 
 - [MI Health Home Model Overview](https://bhealthintegration.com/wp-content/uploads/2021/09/OHH-Day-1-02-MI-Health-Home-Model-Overview-Schell-Villasurda.pdf)
 - [Michigan Psychiatric Care Improvement Project update](https://cmham.org/wp-content/uploads/2021/05/Michigan-Psychiatric-Care-Improvement-Project-Update-5.21_Short-Version.pdf)
 - [eConsent presentation](https://mihin.org/wp-content/uploads/2021/03/eConsent-Presentation.pdf)
+- [Mercer fact sheet: Expansion of the CCBHC Demonstration under the Bipartisan Safer Communities Act](https://www.mercer-government.mercer.com/content/dam/mercer-subdomains/us-government/attachments/New/ExpansionOfCCBHC_2022.pdf)
 
 ## Videos and featured discussions
 
 - [Mercer behavioral health video series: CCBHC Model](https://www.mercer-government.mercer.com/our-insights.html)
   Public Mercer feature highlighting a discussion with Dr. Jason Vogler, Jon Villasurda, and Toby Ramsdell on implementing and sustaining CCBHCs.
 - [Watch the CCBHC Model video](https://bcove.video/3OfDsNN)
+
+## Employer references
+
+- [2025 NatCon conference resources from Mercer Government](https://www.mercer-government.mercer.com/resource-hub/NatCon25.html)
+- [2024 NASHP conference resources from Mercer Government](https://www.mercer-government.mercer.com/resource-hub/NASHP.html)
 
 ## Identity note
 

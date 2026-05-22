@@ -14,6 +14,9 @@ permalink: /sitemap.xml
     <loc>{{ '/work/' | absolute_url }}</loc>
   </url>
   <url>
+    <loc>{{ '/ccbhc/' | absolute_url }}</loc>
+  </url>
+  <url>
     <loc>{{ '/publications/' | absolute_url }}</loc>
   </url>
 </urlset>

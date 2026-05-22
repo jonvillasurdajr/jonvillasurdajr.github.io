@@ -35,3 +35,5 @@ His work centers on:
 
 - [Mercer behavioral health video series: CCBHC Model](https://www.mercer-government.mercer.com/our-insights.html)
 - [Direct video link](https://bcove.video/3OfDsNN)
+- [2025 NatCon Mercer conference resources](https://www.mercer-government.mercer.com/resource-hub/NatCon25.html)
+- [2024 NASHP Mercer conference resources](https://www.mercer-government.mercer.com/resource-hub/NASHP.html)

@@ -6,7 +6,7 @@ Also known professionally as Jon Villasurda.
 
 This GitHub profile represents Jon Villasurda Jr. and is intended to distinguish him from other individuals with the same name.
 
-[Website](https://jonvillasurdajr.github.io/) | [About](https://jonvillasurdajr.github.io/about/) | [LinkedIn](https://www.linkedin.com/in/jon-villasurda-jr-54817619) | [CHRT bio](https://chrt.org/bio/jon-villasurda/)
+[Website](https://jonvillasurdajr.github.io/) | [About](https://jonvillasurdajr.github.io/about/) | [CCBHC work](https://jonvillasurdajr.github.io/ccbhc/) | [LinkedIn](https://www.linkedin.com/in/jon-villasurda-jr-54817619) | [CHRT bio](https://chrt.org/bio/jon-villasurda/)
 
 ## Focus areas
 
@@ -24,8 +24,10 @@ This GitHub profile represents Jon Villasurda Jr. and is intended to distinguish
 
 ## Featured work
 
+- [Mercer CCBHC Model video feature](https://www.mercer-government.mercer.com/our-insights.html)
+- [CCBHC work and public resources](https://jonvillasurdajr.github.io/ccbhc/)
 - [NJ CCBHC Certification Portal](https://github.com/jonvillasurdajr/nj-ccbhc-portal)
-- [Professional website and disambiguation pages](https://jonvillasurdajr.github.io/)
+- [Professional website and background](https://jonvillasurdajr.github.io/work/)
 - [Implementing a Health Home: Michigan's Experience](https://journals.sagepub.com/doi/abs/10.1177/1527154417749849/)
 - [The Role of Certified Community Behavioral Health Clinics in Crisis Services and Systems](https://www.thenationalcouncil.org/wp-content/uploads/2025/04/4.09.27_CCBHCs-and-Crisis-Paper_v3.pdf)
 
