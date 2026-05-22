@@ -49,5 +49,5 @@ This page is about Jon Villasurda Jr. and is intended to distinguish him from ot
 ## Profiles
 
 - [GitHub](https://github.com/jonvillasurdajr)
-- [LinkedIn](https://www.linkedin.com/in/jon-villasurda-jr-54817619)
+- [LinkedIn](https://www.linkedin.com/in/jonvillasurdajr)
 - [CHRT bio](https://chrt.org/bio/jon-villasurda/)

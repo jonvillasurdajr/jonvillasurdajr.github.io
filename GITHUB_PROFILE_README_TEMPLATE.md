@@ -6,7 +6,7 @@ Also known professionally as Jon Villasurda.
 
 This GitHub profile represents Jon Villasurda Jr. and is intended to distinguish him from other individuals with the same name.
 
-[Website](https://jonvillasurdajr.github.io/) | [About](https://jonvillasurdajr.github.io/about/) | [CCBHC work](https://jonvillasurdajr.github.io/ccbhc/) | [Notes](https://jonvillasurdajr.github.io/notes/) | [LinkedIn](https://www.linkedin.com/in/jon-villasurda-jr-54817619) | [CHRT bio](https://chrt.org/bio/jon-villasurda/)
+[Website](https://jonvillasurdajr.github.io/) | [About](https://jonvillasurdajr.github.io/about/) | [CCBHC work](https://jonvillasurdajr.github.io/ccbhc/) | [Notes](https://jonvillasurdajr.github.io/notes/) | [LinkedIn](https://www.linkedin.com/in/jonvillasurdajr) | [CHRT bio](https://chrt.org/bio/jon-villasurda/)
 
 ## Focus areas
 

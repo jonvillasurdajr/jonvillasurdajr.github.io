@@ -33,5 +33,5 @@ Jon works on healthcare policy, behavioral health services, Medicaid, public sec
 ## Public profiles
 
 - [GitHub](https://github.com/jonvillasurdajr)
-- [LinkedIn](https://www.linkedin.com/in/jon-villasurda-jr-54817619)
+- [LinkedIn](https://www.linkedin.com/in/jonvillasurdajr)
 - [CHRT bio](https://chrt.org/bio/jon-villasurda/)

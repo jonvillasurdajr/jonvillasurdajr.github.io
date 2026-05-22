@@ -28,7 +28,7 @@ His work centers on:
 ## Online profiles
 
 - [GitHub profile](https://github.com/jonvillasurdajr)
-- [LinkedIn profile](https://www.linkedin.com/in/jon-villasurda-jr-54817619)
+- [LinkedIn profile](https://www.linkedin.com/in/jonvillasurdajr)
 - [CHRT biography](https://chrt.org/bio/jon-villasurda/)
 
 ## Recent featured work
