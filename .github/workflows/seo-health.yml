@@ -1,0 +1,56 @@
+name: SEO Health
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: "17 13 * * 1"
+
+jobs:
+  check-live-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check live SEO pages
+        run: |
+          set -euo pipefail
+          urls=(
+            "https://jonvillasurdajr.github.io/"
+            "https://jonvillasurdajr.github.io/about/"
+            "https://jonvillasurdajr.github.io/work/"
+            "https://jonvillasurdajr.github.io/ccbhc/"
+            "https://jonvillasurdajr.github.io/media/"
+            "https://jonvillasurdajr.github.io/cv/"
+            "https://jonvillasurdajr.github.io/notes/"
+            "https://jonvillasurdajr.github.io/notes/ccbhc-implementation/"
+            "https://jonvillasurdajr.github.io/notes/behavioral-health-crisis-systems/"
+            "https://jonvillasurdajr.github.io/notes/medicaid-delivery-design/"
+            "https://jonvillasurdajr.github.io/notes/healthcare-performance-measures/"
+            "https://jonvillasurdajr.github.io/notes/program-evaluation/"
+            "https://jonvillasurdajr.github.io/notes/public-sector-analytics/"
+            "https://jonvillasurdajr.github.io/publications/"
+          )
+
+          for url in "${urls[@]}"; do
+            html="$(curl --fail --silent --show-error "$url")"
+            printf 'Checking %s\n' "$url"
+            printf '%s' "$html" | grep -Fq '<meta name="description"'
+            printf '%s' "$html" | grep -Fq '<link rel="canonical"'
+            printf '%s' "$html" | grep -Fq '<meta name="robots" content="index,follow'
+          done
+
+      - name: Check identity schema and discovery files
+        run: |
+          set -euo pipefail
+          home="$(curl --fail --silent --show-error "https://jonvillasurdajr.github.io/")"
+          sitemap="$(curl --fail --silent --show-error "https://jonvillasurdajr.github.io/sitemap.xml")"
+          robots="$(curl --fail --silent --show-error "https://jonvillasurdajr.github.io/robots.txt")"
+          key="$(curl --fail --silent --show-error "https://jonvillasurdajr.github.io/indexnow-key.txt")"
+
+          printf '%s' "$home" | grep -Fq '"@type": "Person"'
+          printf '%s' "$home" | grep -Fq '"name": "Jon Villasurda Jr."'
+          printf '%s' "$sitemap" | grep -Fq "https://jonvillasurdajr.github.io/notes/"
+          printf '%s' "$sitemap" | grep -Fq "https://jonvillasurdajr.github.io/media/"
+          printf '%s' "$robots" | grep -Fq "Sitemap: https://jonvillasurdajr.github.io/sitemap.xml"
+          printf '%s' "$key" | grep -Fq "4207b86b12b5d2e71ceba1400f09c585"
