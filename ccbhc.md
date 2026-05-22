@@ -24,5 +24,6 @@ Jon Villasurda Jr., also known professionally as Jon Villasurda, works on behavi
 ## Related pages
 
 - [Professional background](/work/)
+- [CCBHC implementation notes](/notes/ccbhc-implementation/)
 - [Publications and presentations](/publications/)
 - [About Jon Villasurda Jr.](/about/)

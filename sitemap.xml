@@ -17,6 +17,24 @@ permalink: /sitemap.xml
     <loc>{{ '/ccbhc/' | absolute_url }}</loc>
   </url>
   <url>
+    <loc>{{ '/media/' | absolute_url }}</loc>
+  </url>
+  <url>
+    <loc>{{ '/cv/' | absolute_url }}</loc>
+  </url>
+  <url>
+    <loc>{{ '/notes/' | absolute_url }}</loc>
+  </url>
+  <url>
+    <loc>{{ '/notes/ccbhc-implementation/' | absolute_url }}</loc>
+  </url>
+  <url>
+    <loc>{{ '/notes/medicaid-delivery-design/' | absolute_url }}</loc>
+  </url>
+  <url>
+    <loc>{{ '/notes/program-evaluation/' | absolute_url }}</loc>
+  </url>
+  <url>
     <loc>{{ '/publications/' | absolute_url }}</loc>
   </url>
 </urlset>

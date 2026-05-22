@@ -37,3 +37,9 @@ His work centers on:
 - [Direct video link](https://bcove.video/3OfDsNN)
 - [2025 NatCon Mercer conference resources](https://www.mercer-government.mercer.com/resource-hub/NatCon25.html)
 - [2024 NASHP Mercer conference resources](https://www.mercer-government.mercer.com/resource-hub/NASHP.html)
+
+## Public reference pages
+
+- [Media and speaking](/media/)
+- [Policy notes](/notes/)
+- [Public biography and CV summary](/cv/)
