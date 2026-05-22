@@ -12,8 +12,11 @@ These public notes reflect topics connected to Jon Villasurda Jr.'s work in heal
 ## Notes
 
 - [CCBHC implementation notes](/notes/ccbhc-implementation/)
+- [Behavioral health crisis systems notes](/notes/behavioral-health-crisis-systems/)
 - [Medicaid delivery design notes](/notes/medicaid-delivery-design/)
+- [Healthcare performance measure notes](/notes/healthcare-performance-measures/)
 - [Program evaluation notes](/notes/program-evaluation/)
+- [Public sector analytics notes](/notes/public-sector-analytics/)
 
 ## Related resources
 
