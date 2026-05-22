@@ -11,6 +11,8 @@ Jon Villasurda Jr., also known professionally as Jon Villasurda, works on behavi
 
 ## Featured Mercer resources
 
+- [Mercer CCBHC video page](/media/mercer-ccbhc-video/)
+  Dedicated page for the public CCBHC Model video reference and related resources.
 - [Mercer behavioral health video series: CCBHC Model](https://www.mercer-government.mercer.com/our-insights.html)
   Dr. Jason Vogler, Jon Villasurda, and Toby Ramsdell discuss how states can implement and sustain CCBHCs by aligning policy, operations, and payment.
 - [Watch the Mercer CCBHC Model video](https://bcove.video/3OfDsNN)
@@ -26,4 +28,5 @@ Jon Villasurda Jr., also known professionally as Jon Villasurda, works on behavi
 - [Professional background](/work/)
 - [CCBHC implementation notes](/notes/ccbhc-implementation/)
 - [Publications and presentations](/publications/)
+- [Speaker bio and media kit](/speaker-bio/)
 - [About Jon Villasurda Jr.](/about/)

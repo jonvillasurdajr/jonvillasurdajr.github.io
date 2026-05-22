@@ -44,7 +44,9 @@ This page is about Jon Villasurda Jr. and is intended to distinguish him from ot
 - [Work and professional background](/work/)
 - [CCBHC work and resources](/ccbhc/)
 - [Media and speaking](/media/)
+- [Speaker bio and media kit](/speaker-bio/)
 - [Public biography and CV summary](/cv/)
+- [Official professional links](/links/)
 
 ## Profiles
 

@@ -15,6 +15,7 @@ Mercer's behavioral health video series includes a CCBHC Model discussion with D
 
 - [Mercer CCBHC Model feature](https://www.mercer-government.mercer.com/our-insights.html)
 - [Watch the public video](https://bcove.video/3OfDsNN)
+- [Dedicated Mercer CCBHC video page](/media/mercer-ccbhc-video/)
 - [Related CCBHC resources](/ccbhc/)
 
 ## Conference references
@@ -26,3 +27,8 @@ Mercer's behavioral health video series includes a CCBHC Model discussion with D
 
 - [MI Health Home Model Overview](https://bhealthintegration.com/wp-content/uploads/2021/09/OHH-Day-1-02-MI-Health-Home-Model-Overview-Schell-Villasurda.pdf)
 - [eConsent presentation](https://mihin.org/wp-content/uploads/2021/03/eConsent-Presentation.pdf)
+
+## Bio and links
+
+- [Speaker bio and media kit](/speaker-bio/)
+- [Official professional links](/links/)

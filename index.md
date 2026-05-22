@@ -17,7 +17,9 @@ This site is intended to identify Jon Villasurda Jr. as a distinct person and pr
 [CCBHC work](/ccbhc/)
 [Policy notes](/notes/)
 [Media and speaking](/media/)
+[Speaker bio](/speaker-bio/)
 [Publications and presentations](/publications/)
+[Official links](/links/)
 
 ## Professional focus
 
@@ -30,6 +32,7 @@ This site is intended to identify Jon Villasurda Jr. as a distinct person and pr
 - [GitHub profile](https://github.com/jonvillasurdajr)
 - [LinkedIn](https://www.linkedin.com/in/jonvillasurdajr)
 - [CHRT bio](https://chrt.org/bio/jon-villasurda/)
+- [Mercer CCBHC video page](/media/mercer-ccbhc-video/)
 - [Mercer CCBHC video feature](https://www.mercer-government.mercer.com/our-insights.html)
 - [NJ CCBHC Certification Portal proof of concept](https://github.com/jonvillasurdajr/nj-ccbhc-portal)
 - [Health policy notes on GitHub](https://github.com/jonvillasurdajr/health-policy-notes)

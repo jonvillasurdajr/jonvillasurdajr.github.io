@@ -33,6 +33,7 @@ His work centers on:
 
 ## Recent featured work
 
+- [Mercer CCBHC video page](/media/mercer-ccbhc-video/)
 - [Mercer behavioral health video series: CCBHC Model](https://www.mercer-government.mercer.com/our-insights.html)
 - [Direct video link](https://bcove.video/3OfDsNN)
 - [2025 NatCon Mercer conference resources](https://www.mercer-government.mercer.com/resource-hub/NatCon25.html)
@@ -41,5 +42,7 @@ His work centers on:
 ## Public reference pages
 
 - [Media and speaking](/media/)
+- [Speaker bio and media kit](/speaker-bio/)
 - [Policy notes](/notes/)
 - [Public biography and CV summary](/cv/)
+- [Official professional links](/links/)

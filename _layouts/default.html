@@ -95,12 +95,16 @@
 
     {% include website-jsonld.html %}
 
-    {% if page.url == "/" or page.url == "/about/" %}
+    {% if page.url == "/" or page.url == "/about/" or page.url == "/links/" or page.url == "/speaker-bio/" %}
       {% include person-jsonld.html %}
     {% endif %}
 
-    {% if page.url == "/about/" %}
+    {% if page.url == "/about/" or page.url == "/links/" or page.url == "/speaker-bio/" %}
       {% include profilepage-about-jsonld.html %}
+    {% endif %}
+
+    {% if page.url == "/media/mercer-ccbhc-video/" %}
+      {% include video-mercer-ccbhc-jsonld.html %}
     {% endif %}
   </head>
 
@@ -113,7 +117,9 @@
         <a href="{{ '/ccbhc/' | relative_url }}">CCBHC</a>
         <a href="{{ '/notes/' | relative_url }}">Notes</a>
         <a href="{{ '/media/' | relative_url }}">Media</a>
+        <a href="{{ '/speaker-bio/' | relative_url }}">Bio</a>
         <a href="{{ '/publications/' | relative_url }}">Publications</a>
+        <a href="{{ '/links/' | relative_url }}">Links</a>
       </nav>
       {{ content }}
     </main>

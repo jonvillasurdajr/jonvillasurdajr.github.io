@@ -17,7 +17,16 @@ permalink: /sitemap.xml
     <loc>{{ '/ccbhc/' | absolute_url }}</loc>
   </url>
   <url>
+    <loc>{{ '/links/' | absolute_url }}</loc>
+  </url>
+  <url>
     <loc>{{ '/media/' | absolute_url }}</loc>
+  </url>
+  <url>
+    <loc>{{ '/media/mercer-ccbhc-video/' | absolute_url }}</loc>
+  </url>
+  <url>
+    <loc>{{ '/speaker-bio/' | absolute_url }}</loc>
   </url>
   <url>
     <loc>{{ '/cv/' | absolute_url }}</loc>
