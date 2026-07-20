@@ -1,11 +1,14 @@
 ---
 layout: default
 title: Medicaid Delivery Design Notes by Jon Villasurda Jr.
+seo_title: "Medicaid Delivery Design | Jon Villasurda Jr."
 permalink: /notes/medicaid-delivery-design/
-description: "Public notes by Jon Villasurda Jr. on Medicaid delivery design and public sector implementation."
+description: "Medicaid delivery design notes on beneficiary experience, implementation roles, financing, accountability, measurement, and evaluation."
 ---
 
 # Medicaid Delivery Design Notes
+
+*By [Jon Villasurda Jr., MPH](/about/)*
 
 Medicaid delivery design has to connect policy intent with operational feasibility.
 
@@ -23,7 +26,10 @@ Medicaid delivery design has to connect policy intent with operational feasibili
 - Make integration requirements explicit where behavioral and physical health systems intersect.
 - Plan for adjustment after early program evidence is available.
 
-## Related pages
+## Related reading
 
 - [Work and professional background](/work/)
 - [Program evaluation notes](/notes/program-evaluation/)
+- [Healthcare performance measure notes](/notes/healthcare-performance-measures/)
+- [Public sector analytics notes](/notes/public-sector-analytics/)
+- [All healthcare policy notes](/notes/)

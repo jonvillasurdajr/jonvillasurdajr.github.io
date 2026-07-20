@@ -1,8 +1,9 @@
 ---
 layout: default
 title: Mercer CCBHC Video with Jon Villasurda Jr.
+seo_title: "CCBHC Model Video | Jon Villasurda Jr. & Mercer"
 permalink: /media/mercer-ccbhc-video/
-description: "Mercer CCBHC Model video reference featuring Jon Villasurda with Dr. Jason Vogler and Toby Ramsdell on implementation and sustainability."
+description: "Watch Mercer's CCBHC Model discussion with Jon Villasurda, Jason Vogler, and Toby Ramsdell on policy, operations, payment, and sustainability."
 ---
 
 # Mercer CCBHC Video with Jon Villasurda Jr.
@@ -10,6 +11,8 @@ description: "Mercer CCBHC Model video reference featuring Jon Villasurda with D
 Mercer's behavioral health video series includes a public **CCBHC Model** discussion with Dr. Jason Vogler, Jon Villasurda, and Toby Ramsdell.
 
 The conversation focuses on a practical question for state Medicaid and behavioral health leaders: how policy, operations, and payment can be aligned to implement and sustain Certified Community Behavioral Health Clinics over time.
+
+The video is hosted by Mercer. This page provides context and links to the publisher's feature and public player.
 
 ## Watch and source
 

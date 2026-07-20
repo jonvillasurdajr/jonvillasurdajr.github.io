@@ -2,62 +2,41 @@ name: SEO Health
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
   schedule:
     - cron: "17 13 * * 1"
 
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: seo-health-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   check-live-pages:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
-      - name: Check live SEO pages
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Wait for the deployed revision
+        run: python3 scripts/seo_automation.py wait-revision --site https://jonvillasurdajr.github.io/ --expected-sha "${{ github.sha }}" --timeout 900
+      - name: Audit live sitemap URLs
+        run: python3 scripts/seo_automation.py audit --sitemap https://jonvillasurdajr.github.io/sitemap.xml
+      - name: Open or update SEO health issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          set -euo pipefail
-          urls=(
-            "https://jonvillasurdajr.github.io/"
-            "https://jonvillasurdajr.github.io/about/"
-            "https://jonvillasurdajr.github.io/work/"
-            "https://jonvillasurdajr.github.io/ccbhc/"
-            "https://jonvillasurdajr.github.io/media/"
-            "https://jonvillasurdajr.github.io/cv/"
-            "https://jonvillasurdajr.github.io/notes/"
-            "https://jonvillasurdajr.github.io/notes/ccbhc-implementation/"
-            "https://jonvillasurdajr.github.io/notes/behavioral-health-crisis-systems/"
-            "https://jonvillasurdajr.github.io/notes/medicaid-delivery-design/"
-            "https://jonvillasurdajr.github.io/notes/healthcare-performance-measures/"
-            "https://jonvillasurdajr.github.io/notes/program-evaluation/"
-            "https://jonvillasurdajr.github.io/notes/public-sector-analytics/"
-            "https://jonvillasurdajr.github.io/publications/"
-          )
-
-          for url in "${urls[@]}"; do
-            html="$(curl --fail --silent --show-error \
-              --retry 12 --retry-delay 15 --retry-all-errors \
-              "$url")"
-            printf 'Checking %s\n' "$url"
-            printf '%s' "$html" | grep -Fq '<meta name="description"'
-            printf '%s' "$html" | grep -Fq '<link rel="canonical"'
-            printf '%s' "$html" | grep -Fq '<meta name="robots" content="index,follow'
-          done
-
-      - name: Check identity schema and discovery files
+          title="Automated SEO health check failing"
+          body="The SEO health workflow failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          issue="$(gh issue list --repo "${{ github.repository }}" --state open --search "$title in:title" --json number,title --jq '.[] | select(.title == "Automated SEO health check failing") | .number' | head -n 1)"
+          if [ -n "$issue" ]; then gh issue comment "$issue" --repo "${{ github.repository }}" --body "$body"; else gh issue create --repo "${{ github.repository }}" --title "$title" --body "$body"; fi
+      - name: Close recovered SEO health issue
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          set -euo pipefail
-          curl_live() {
-            curl --fail --silent --show-error \
-              --retry 12 --retry-delay 15 --retry-all-errors "$1"
-          }
-
-          home="$(curl_live "https://jonvillasurdajr.github.io/")"
-          sitemap="$(curl_live "https://jonvillasurdajr.github.io/sitemap.xml")"
-          robots="$(curl_live "https://jonvillasurdajr.github.io/robots.txt")"
-          key="$(curl_live "https://jonvillasurdajr.github.io/indexnow-key.txt")"
-
-          printf '%s' "$home" | grep -Fq '"@type": "Person"'
-          printf '%s' "$home" | grep -Fq '"name": "Jon Villasurda Jr."'
-          printf '%s' "$sitemap" | grep -Fq "https://jonvillasurdajr.github.io/notes/"
-          printf '%s' "$sitemap" | grep -Fq "https://jonvillasurdajr.github.io/media/"
-          printf '%s' "$robots" | grep -Fq "Sitemap: https://jonvillasurdajr.github.io/sitemap.xml"
-          printf '%s' "$key" | grep -Fq "4207b86b12b5d2e71ceba1400f09c585"
+          gh issue list --repo "${{ github.repository }}" --state open --search "Automated SEO health check failing in:title" --json number,title --jq '.[] | select(.title == "Automated SEO health check failing") | .number' | while read -r issue; do gh issue close "$issue" --repo "${{ github.repository }}" --comment "SEO health check recovered: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"; done

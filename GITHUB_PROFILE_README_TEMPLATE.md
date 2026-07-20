@@ -1,40 +1,34 @@
-# Jon Villasurda Jr.
+# Jon Villasurda Jr., MPH
 
-Senior Principal in healthcare and government benefits consulting at Mercer, based in Okemos, Michigan.
+Senior Principal with Mercer Government based in Okemos, Michigan, focused on Medicaid, behavioral health, CCBHC implementation, and public-sector health strategy.
 
-Also known professionally as Jon Villasurda.
+My work connects policy design with implementation, operations, payment, analytics, finance, measurement, and evaluation for publicly funded healthcare systems.
 
-This GitHub profile represents Jon Villasurda Jr. and is intended to distinguish him from other individuals with the same name.
-
-[Website](https://jonvillasurdajr.github.io/) | [About](https://jonvillasurdajr.github.io/about/) | [CCBHC work](https://jonvillasurdajr.github.io/ccbhc/) | [Notes](https://jonvillasurdajr.github.io/notes/) | [LinkedIn](https://www.linkedin.com/in/jonvillasurdajr) | [CHRT bio](https://chrt.org/bio/jon-villasurda/)
+[Website](https://jonvillasurdajr.github.io/) | [About](https://jonvillasurdajr.github.io/about/) | [CCBHC work](https://jonvillasurdajr.github.io/ccbhc/) | [Policy notes](https://jonvillasurdajr.github.io/notes/) | [Publications](https://jonvillasurdajr.github.io/publications/) | [LinkedIn](https://www.linkedin.com/in/jon-villasurda-jr-mph-54817619)
 
 ## Focus areas
 
-- Medicaid and healthcare policy
-- Behavioral health services and delivery system design
-- Public sector strategy and program evaluation
-- Analytics, finance, and delivery system design
+- Medicaid policy and delivery system implementation
+- Behavioral health services and crisis system design
+- Certified Community Behavioral Health Clinics (CCBHCs)
+- Public-sector analytics, finance, measurement, and program evaluation
 
-## Current profile
+## Featured public work
 
-- Senior Principal at Mercer
-- Based in Okemos, Michigan
-- University of Michigan graduate
-- Former Michigan Department of Health and Human Services leader
+- [Mercer CCBHC Model discussion](https://jonvillasurdajr.github.io/media/mercer-ccbhc-video/)
+- [Implementing a Health Home: Michigan's Experience](https://journals.sagepub.com/doi/10.1177/1527154417749849)
+- [The Role of Certified Community Behavioral Health Clinics in Crisis Services and Systems](https://www.thenationalcouncil.org/wp-content/uploads/2025/04/4.09.27_CCBHCs-and-Crisis-Paper_v3.pdf)
 
-## Featured work
+## Projects and notes
 
-- [Mercer CCBHC Model video feature](https://www.mercer-government.mercer.com/our-insights.html)
-- [CCBHC work and public resources](https://jonvillasurdajr.github.io/ccbhc/)
-- [Media and speaking references](https://jonvillasurdajr.github.io/media/)
-- [Policy notes](https://jonvillasurdajr.github.io/notes/)
 - [NJ CCBHC Certification Portal](https://github.com/jonvillasurdajr/nj-ccbhc-portal)
 - [Health policy notes repository](https://github.com/jonvillasurdajr/health-policy-notes)
 - [Public sector analytics examples](https://github.com/jonvillasurdajr/public-sector-analytics-examples)
-- [Public CV summary](https://jonvillasurdajr.github.io/cv/)
-- [Implementing a Health Home: Michigan's Experience](https://journals.sagepub.com/doi/abs/10.1177/1527154417749849/)
-- [The Role of Certified Community Behavioral Health Clinics in Crisis Services and Systems](https://www.thenationalcouncil.org/wp-content/uploads/2025/04/4.09.27_CCBHCs-and-Crisis-Paper_v3.pdf)
 
-## Identity note
+## Background
 
-This profile is for Jon Villasurda Jr. of Okemos, Michigan. It is intended to reinforce accurate professional identity signals across GitHub and search engines.
+- Senior Principal with Mercer Government
+- Previous experience with the Michigan Department of Health and Human Services and Michigan Primary Care Association
+- Bachelor of Science in psychology and Master of Public Health in health management and policy, University of Michigan
+
+Professional sources may list me as Jon Villasurda or Jon Villasurda Jr.

@@ -1,11 +1,14 @@
 ---
 layout: default
 title: Behavioral Health Crisis Systems Notes by Jon Villasurda Jr.
+seo_title: "Behavioral Health Crisis Systems | Jon Villasurda Jr."
 permalink: /notes/behavioral-health-crisis-systems/
-description: "Public notes by Jon Villasurda Jr. on behavioral health crisis systems and program design."
+description: "Behavioral health crisis system design notes on access, triage, stabilization, follow-up, financing, data, handoffs, and accountability."
 ---
 
 # Behavioral Health Crisis Systems Notes
+
+*By [Jon Villasurda Jr., MPH](/about/)*
 
 Behavioral health crisis systems require more than a list of services. Program design has to connect access, triage, stabilization, follow-up, financing, and accountability.
 
@@ -20,4 +23,6 @@ Behavioral health crisis systems require more than a list of services. Program d
 
 - [CCBHC work and public resources](/ccbhc/)
 - [CCBHC implementation notes](/notes/ccbhc-implementation/)
+- [Medicaid delivery design notes](/notes/medicaid-delivery-design/)
 - [The Role of Certified Community Behavioral Health Clinics in Crisis Services and Systems](https://www.thenationalcouncil.org/wp-content/uploads/2025/04/4.09.27_CCBHCs-and-Crisis-Paper_v3.pdf)
+- [All healthcare policy notes](/notes/)

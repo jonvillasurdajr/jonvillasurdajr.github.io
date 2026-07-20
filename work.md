@@ -1,17 +1,18 @@
 ---
 layout: default
 title: Work of Jon Villasurda Jr.
+seo_title: "Jon Villasurda Jr. | Healthcare Consulting Work"
 permalink: /work/
-description: "Professional background of Jon Villasurda Jr., a Senior Principal at Mercer in Okemos, Michigan."
+description: "Explore Jon Villasurda Jr.'s healthcare consulting work in Medicaid policy, behavioral health system design, analytics, finance, and program evaluation."
 ---
 
 # Work of Jon Villasurda Jr.
 
-Jon Villasurda Jr. works in healthcare and government benefits consulting with a focus on public sector strategy, Medicaid policy, and behavioral health system design.
+Jon Villasurda Jr., MPH, works at the intersection of Medicaid policy, behavioral health system design, public-sector implementation, and evidence-informed management.
 
 ## Current work
 
-Jon Villasurda Jr. is a Senior Principal at Mercer in Okemos, Michigan.
+Jon is a Senior Principal with Mercer Government in Okemos, Michigan.
 
 His work centers on:
 
@@ -20,15 +21,19 @@ His work centers on:
 - Public sector consulting
 - Program evaluation, analytics, and finance
 
-## Previous organizations
+His public CCBHC work emphasizes aligning policy, operations, payment, and measurement so programs can move from design to sustainable implementation.
+
+## Prior experience
 
 - Michigan Department of Health and Human Services
 - Michigan Primary Care Association
 
+That background includes Medicaid policy, program operations, strategic initiatives, and work across government and provider systems.
+
 ## Online profiles
 
 - [GitHub profile](https://github.com/jonvillasurdajr)
-- [LinkedIn profile](https://www.linkedin.com/in/jonvillasurdajr)
+- [LinkedIn profile](https://www.linkedin.com/in/jon-villasurda-jr-mph-54817619)
 - [CHRT biography](https://chrt.org/bio/jon-villasurda/)
 
 ## Recent featured work
@@ -36,8 +41,8 @@ His work centers on:
 - [Mercer CCBHC video page](/media/mercer-ccbhc-video/)
 - [Mercer behavioral health video series: CCBHC Model](https://www.mercer-government.mercer.com/our-insights.html)
 - [Direct video link](https://bcove.video/3OfDsNN)
-- [2025 NatCon Mercer conference resources](https://www.mercer-government.mercer.com/resource-hub/NatCon25.html)
-- [2024 NASHP Mercer conference resources](https://www.mercer-government.mercer.com/resource-hub/NASHP.html)
+- [2025 NatCon Mercer conference resources](https://www.mercer-government.mercer.com/content/mercer-sites/mercer-government/global/en/resource-hub/NatCon25.html)
+- [Implementing a Health Home: Michigan's Experience](https://journals.sagepub.com/doi/10.1177/1527154417749849)
 
 ## Public reference pages
 

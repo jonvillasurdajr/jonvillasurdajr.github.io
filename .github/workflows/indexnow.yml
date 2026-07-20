@@ -2,47 +2,36 @@ name: Notify IndexNow
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - "**.md"
-      - "sitemap.xml"
-      - "robots.txt"
-      - "indexnow-key.txt"
+      - "**.html"
+      - "_config.yml"
+      - "*.xml"
+      - "*.txt"
+      - "*.css"
+      - "*.js"
       - "_includes/**"
       - "_layouts/**"
+      - "assets/**"
+      - "scripts/seo_automation.py"
       - ".github/workflows/indexnow.yml"
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   submit:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - name: Submit sitemap URLs
-        env:
-          INDEXNOW_KEY: 4207b86b12b5d2e71ceba1400f09c585
-        run: |
-          curl --fail-with-body --silent --show-error \
-            --request POST "https://www.bing.com/indexnow" \
-            --header "Content-Type: application/json" \
-            --data '{
-              "host": "jonvillasurdajr.github.io",
-              "key": "'"${INDEXNOW_KEY}"'",
-              "keyLocation": "https://jonvillasurdajr.github.io/indexnow-key.txt",
-              "urlList": [
-                "https://jonvillasurdajr.github.io/",
-                "https://jonvillasurdajr.github.io/about/",
-                "https://jonvillasurdajr.github.io/work/",
-                "https://jonvillasurdajr.github.io/ccbhc/",
-                "https://jonvillasurdajr.github.io/media/",
-                "https://jonvillasurdajr.github.io/cv/",
-                "https://jonvillasurdajr.github.io/notes/",
-                "https://jonvillasurdajr.github.io/notes/ccbhc-implementation/",
-                "https://jonvillasurdajr.github.io/notes/behavioral-health-crisis-systems/",
-                "https://jonvillasurdajr.github.io/notes/medicaid-delivery-design/",
-                "https://jonvillasurdajr.github.io/notes/healthcare-performance-measures/",
-                "https://jonvillasurdajr.github.io/notes/program-evaluation/",
-                "https://jonvillasurdajr.github.io/notes/public-sector-analytics/",
-                "https://jonvillasurdajr.github.io/publications/"
-              ]
-            }'
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Wait for the deployed revision
+        run: python3 scripts/seo_automation.py wait-revision --site https://jonvillasurdajr.github.io/ --expected-sha "${{ github.sha }}" --timeout 900
+      - name: Submit live sitemap URLs
+        run: python3 scripts/seo_automation.py submit-indexnow --sitemap https://jonvillasurdajr.github.io/sitemap.xml --key-file indexnow-key.txt

@@ -1,11 +1,14 @@
 ---
 layout: default
 title: CCBHC Implementation Notes by Jon Villasurda Jr.
+seo_title: "CCBHC Implementation Notes | Jon Villasurda Jr."
 permalink: /notes/ccbhc-implementation/
-description: "Public CCBHC implementation notes by Jon Villasurda Jr. focused on operations, policy, payment, and measurement."
+description: "A practical CCBHC implementation framework covering governance, clinical workflows, payment, measurement, access, quality, and sustainability."
 ---
 
 # CCBHC Implementation Notes
+
+*By [Jon Villasurda Jr., MPH](/about/)*
 
 These notes summarize public implementation considerations for Certified Community Behavioral Health Clinics.
 
@@ -23,8 +26,11 @@ These notes summarize public implementation considerations for Certified Communi
 - Connect clinical workflows, payment design, and state oversight.
 - Revisit assumptions after early utilization and access patterns are visible.
 
-## Related public resources
+## Related reading
 
 - [Jon Villasurda Jr. and CCBHC work](/ccbhc/)
+- [Behavioral health crisis systems notes](/notes/behavioral-health-crisis-systems/)
+- [Healthcare performance measure notes](/notes/healthcare-performance-measures/)
 - [Mercer CCBHC Model feature](https://www.mercer-government.mercer.com/our-insights.html)
 - [The Role of Certified Community Behavioral Health Clinics in Crisis Services and Systems](https://www.thenationalcouncil.org/wp-content/uploads/2025/04/4.09.27_CCBHCs-and-Crisis-Paper_v3.pdf)
+- [All healthcare policy notes](/notes/)

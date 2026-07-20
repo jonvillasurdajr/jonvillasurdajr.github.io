@@ -1,0 +1,22 @@
+<!-- WebPage JSON-LD (sitewide) -->
+{% assign page_schema_type = page.schema_type | default: 'WebPage' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": {{ page_schema_type | jsonify }},
+  "@id": "{{ canonical_url }}#webpage",
+  "url": "{{ canonical_url }}",
+  "name": {{ seo_title | strip | jsonify }},
+  "description": {{ seo_description | jsonify }},
+  "inLanguage": {{ site.lang | jsonify }},
+  "isPartOf": {
+    "@id": "{{ '/#website' | absolute_url }}"
+  },
+  "author": {
+    "@id": "{{ '/#person' | absolute_url }}"
+  }{% if page.url == '/' or page.url == '/about/' %},
+  "mainEntity": {
+    "@id": "{{ '/#person' | absolute_url }}"
+  }{% endif %}
+}
+</script>
