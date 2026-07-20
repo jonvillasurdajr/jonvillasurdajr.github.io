@@ -1,11 +1,14 @@
 ---
 layout: default
 title: Program Evaluation Notes by Jon Villasurda Jr.
+seo_title: "Healthcare Program Evaluation | Jon Villasurda Jr."
 permalink: /notes/program-evaluation/
-description: "Public program evaluation notes by Jon Villasurda Jr. for healthcare and public sector work."
+description: "Healthcare program evaluation notes on decision framing, implementation monitoring, outcomes, data availability, baselines, and measure design."
 ---
 
 # Program Evaluation Notes
+
+*By [Jon Villasurda Jr., MPH](/about/)*
 
 Program evaluation is most useful when it is designed for decisions, not only retrospective reporting.
 
@@ -23,7 +26,10 @@ Program evaluation is most useful when it is designed for decisions, not only re
 - A recurring management view
 - A deeper evaluation plan for outcomes and tradeoffs
 
-## Related pages
+## Related reading
 
 - [Policy notes](/notes/)
-- [Public CV summary](/cv/)
+- [Healthcare performance measure notes](/notes/healthcare-performance-measures/)
+- [Medicaid delivery design notes](/notes/medicaid-delivery-design/)
+- [Public sector analytics notes](/notes/public-sector-analytics/)
+- [Professional background](/work/)

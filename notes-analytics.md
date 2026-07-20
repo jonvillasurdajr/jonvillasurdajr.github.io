@@ -1,11 +1,14 @@
 ---
 layout: default
 title: Public Sector Analytics Notes by Jon Villasurda Jr.
+seo_title: "Public Sector Analytics | Jon Villasurda Jr."
 permalink: /notes/public-sector-analytics/
-description: "Public notes by Jon Villasurda Jr. on analytics for healthcare and public sector programs."
+description: "Public-sector analytics notes on baselines, measure definitions, operating dashboards, evaluation, limitations, and decision-focused reporting."
 ---
 
 # Public Sector Analytics Notes
+
+*By [Jon Villasurda Jr., MPH](/about/)*
 
 Public sector analytics should make decisions clearer without hiding operational constraints.
 
@@ -23,7 +26,10 @@ Public sector analytics should make decisions clearer without hiding operational
 - Separate descriptive reporting from causal claims.
 - Keep definitions stable enough to compare over time.
 
-## Related pages
+## Related reading
 
 - [Program evaluation notes](/notes/program-evaluation/)
+- [Healthcare performance measure notes](/notes/healthcare-performance-measures/)
+- [Medicaid delivery design notes](/notes/medicaid-delivery-design/)
 - [Public sector analytics examples repository](https://github.com/jonvillasurdajr/public-sector-analytics-examples)
+- [All healthcare policy notes](/notes/)

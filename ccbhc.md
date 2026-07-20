@@ -1,13 +1,14 @@
 ---
 layout: default
 title: Jon Villasurda Jr. and CCBHC Work
+seo_title: "Jon Villasurda Jr. | CCBHC Strategy & Implementation"
 permalink: /ccbhc/
-description: "Public CCBHC work and resources associated with Jon Villasurda Jr., Senior Principal at Mercer in Michigan."
+description: "CCBHC implementation resources and public work featuring Jon Villasurda Jr. on policy, operations, payment, crisis systems, and sustainability."
 ---
 
 # Jon Villasurda Jr. and CCBHC Work
 
-Jon Villasurda Jr., also known professionally as Jon Villasurda, works on behavioral health policy and delivery system design with a public focus that includes Certified Community Behavioral Health Clinics.
+Jon Villasurda Jr., MPH, works on behavioral health policy and delivery system design with a focus that includes Certified Community Behavioral Health Clinics (CCBHCs). His public work connects program requirements with operations, payment, measurement, and long-term sustainability.
 
 ## Featured Mercer resources
 

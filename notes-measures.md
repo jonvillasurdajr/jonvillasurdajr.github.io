@@ -1,11 +1,14 @@
 ---
 layout: default
 title: Healthcare Performance Measure Notes by Jon Villasurda Jr.
+seo_title: "Healthcare Performance Measures | Jon Villasurda Jr."
 permalink: /notes/healthcare-performance-measures/
-description: "Public notes by Jon Villasurda Jr. on healthcare performance measures for operations and evaluation."
+description: "Healthcare performance measurement notes on operating, quality, finance, and evaluation metrics, with practical definition and action checks."
 ---
 
 # Healthcare Performance Measure Notes
+
+*By [Jon Villasurda Jr., MPH](/about/)*
 
 Measures are more useful when their purpose is explicit.
 
@@ -23,7 +26,10 @@ Measures are more useful when their purpose is explicit.
 - Avoid treating every available metric as a key performance measure.
 - Revisit measures when policy design or workflows change.
 
-## Related pages
+## Related reading
 
 - [Program evaluation notes](/notes/program-evaluation/)
+- [CCBHC implementation notes](/notes/ccbhc-implementation/)
+- [Public sector analytics notes](/notes/public-sector-analytics/)
 - [Public sector analytics examples repository](https://github.com/jonvillasurdajr/public-sector-analytics-examples)
+- [All healthcare policy notes](/notes/)

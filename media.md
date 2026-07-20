@@ -1,13 +1,14 @@
 ---
 layout: default
 title: Media and Speaking for Jon Villasurda Jr.
+seo_title: "Jon Villasurda Jr. | Media, Videos & Speaking"
 permalink: /media/
-description: "Public media, video, conference, and speaking references for Jon Villasurda Jr. of Mercer."
+description: "Videos, conference references, presentations, and speaking resources featuring Jon Villasurda Jr.'s Medicaid and behavioral health work."
 ---
 
 # Media and Speaking for Jon Villasurda Jr.
 
-This page collects public media and speaking references for Jon Villasurda Jr., also known professionally as Jon Villasurda.
+This page collects public video, conference, presentation, and speaking references for Jon Villasurda Jr., MPH.
 
 ## Mercer CCBHC video
 
@@ -20,8 +21,7 @@ Mercer's behavioral health video series includes a CCBHC Model discussion with D
 
 ## Conference references
 
-- [Mercer Government resources for NatCon 2025](https://www.mercer-government.mercer.com/resource-hub/NatCon25.html)
-- [Mercer Government resources for NASHP 2024](https://www.mercer-government.mercer.com/resource-hub/NASHP.html)
+- [Mercer Government resources for NatCon 2025](https://www.mercer-government.mercer.com/content/mercer-sites/mercer-government/global/en/resource-hub/NatCon25.html)
 
 ## Presentations
 

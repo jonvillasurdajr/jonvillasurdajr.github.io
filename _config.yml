@@ -1,12 +1,21 @@
 title: Jon Villasurda Jr.
 description: >-
-  Official site for Jon Villasurda Jr., a Senior Principal in healthcare and
-  government benefits consulting at Mercer in Michigan.
+  Official site for Jon Villasurda Jr., MPH, a Mercer Senior Principal focused
+  on Medicaid, behavioral health, CCBHC implementation, and public-sector
+  health strategy.
 url: https://jonvillasurdajr.github.io
+repository: jonvillasurdajr/jonvillasurdajr.github.io
 lang: en-US
 author:
   name: Jon Villasurda Jr.
+  credential: MPH
+  job_title: Senior Principal
+  image: "https://avatars.githubusercontent.com/u/255794973?s=460&v=4"
 social_links:
   github: https://github.com/jonvillasurdajr
-  linkedin: https://www.linkedin.com/in/jonvillasurdajr
+  linkedin: https://www.linkedin.com/in/jon-villasurda-jr-mph-54817619
   chrt: https://chrt.org/bio/jon-villasurda/
+exclude:
+  - GITHUB_PROFILE_README_TEMPLATE.md
+  - README.md
+  - scripts

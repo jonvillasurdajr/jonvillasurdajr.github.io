@@ -5,6 +5,11 @@
   "@type": "WebSite",
   "@id": "{{ '/#website' | absolute_url }}",
   "url": "{{ '/' | absolute_url }}",
-  "name": "{{ site.title | escape }}"
+  "name": {{ site.title | jsonify }},
+  "description": {{ site.description | strip_newlines | jsonify }},
+  "inLanguage": {{ site.lang | jsonify }},
+  "publisher": {
+    "@id": "{{ '/#person' | absolute_url }}"
+  }
 }
 </script>

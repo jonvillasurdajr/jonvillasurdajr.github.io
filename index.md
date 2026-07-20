@@ -1,46 +1,45 @@
 ---
 layout: default
 title: Jon Villasurda Jr.
-description: "Jon Villasurda Jr. is a Senior Principal at Mercer in Michigan, focused on Medicaid, behavioral health, and public sector strategy."
+seo_title: "Jon Villasurda Jr. | Medicaid & Behavioral Health"
+description: "Jon Villasurda Jr., MPH, is a Mercer Senior Principal focused on Medicaid, behavioral health, CCBHC implementation, and public-sector health strategy."
 ---
 
-# Jon Villasurda Jr.
+# Jon Villasurda Jr., MPH
 
-<img class="profile-image" src="https://avatars.githubusercontent.com/u/255794973?v=4" alt="Jon Villasurda Jr." />
+<img class="profile-image" src="{{ site.author.image | escape }}" alt="Portrait of Jon Villasurda Jr." width="180" height="180" fetchpriority="high" decoding="async" />
 
-Jon Villasurda Jr., also known professionally as Jon Villasurda, is a Senior Principal in healthcare and government benefits consulting at Mercer based in Okemos, Michigan.
+**Medicaid, behavioral health, and public-sector health strategy**
 
-This site is intended to identify Jon Villasurda Jr. as a distinct person and professional profile, separate from other individuals with the same name.
+Jon Villasurda Jr. is a Senior Principal with Mercer Government based in Okemos, Michigan. His work connects policy design with implementation, operations, payment, analytics, finance, and evaluation for publicly funded healthcare systems.
 
-[About and disambiguation](/about/)
-[Professional background](/work/)
-[CCBHC work](/ccbhc/)
-[Policy notes](/notes/)
-[Media and speaking](/media/)
-[Speaker bio](/speaker-bio/)
-[Publications and presentations](/publications/)
-[Official links](/links/)
+- [Explore CCBHC work and resources](/ccbhc/)
+- [Read healthcare policy notes](/notes/)
+- [View publications and presentations](/publications/)
+- [Connect on LinkedIn](https://www.linkedin.com/in/jon-villasurda-jr-mph-54817619)
 
-## Professional focus
+## Areas of focus
 
-- Medicaid and healthcare policy
-- Behavioral health services and delivery system design
-- Analytics, finance, and program evaluation
+- Medicaid policy and delivery system implementation
+- Behavioral health services and crisis system design
+- Certified Community Behavioral Health Clinics (CCBHCs)
+- Public-sector analytics, finance, measurement, and program evaluation
 
-## Selected work and profiles
+## Featured public work
 
-- [GitHub profile](https://github.com/jonvillasurdajr)
-- [LinkedIn](https://www.linkedin.com/in/jonvillasurdajr)
-- [CHRT bio](https://chrt.org/bio/jon-villasurda/)
-- [Mercer CCBHC video page](/media/mercer-ccbhc-video/)
-- [Mercer CCBHC video feature](https://www.mercer-government.mercer.com/our-insights.html)
+- [Mercer CCBHC Model discussion](/media/mercer-ccbhc-video/) on aligning policy, operations, and payment for implementation and sustainability
+- [Implementing a Health Home: Michigan's Experience](https://journals.sagepub.com/doi/10.1177/1527154417749849), a peer-reviewed article coauthored by Jon Villasurda
+- [The Role of Certified Community Behavioral Health Clinics in Crisis Services and Systems](https://www.thenationalcouncil.org/wp-content/uploads/2025/04/4.09.27_CCBHCs-and-Crisis-Paper_v3.pdf), developed with a national technical expert panel that included Jon Villasurda
 - [NJ CCBHC Certification Portal proof of concept](https://github.com/jonvillasurdajr/nj-ccbhc-portal)
 - [Health policy notes on GitHub](https://github.com/jonvillasurdajr/health-policy-notes)
 - [Public sector analytics examples on GitHub](https://github.com/jonvillasurdajr/public-sector-analytics-examples)
-- [Public biography and CV summary](/cv/)
 
-## Background
+## Background and profiles
 
-- Senior Principal, Mercer
-- Former Michigan Department of Health and Human Services leader
-- University of Michigan graduate
+Jon's prior experience includes the Michigan Department of Health and Human Services and Michigan Primary Care Association. He earned a Bachelor of Science in psychology and a Master of Public Health in health management and policy from the University of Michigan.
+
+- [About Jon Villasurda Jr.](/about/)
+- [Professional background](/work/)
+- [Speaker bio](/speaker-bio/)
+- [Public CV summary](/cv/)
+- [Official professional links](/links/)
