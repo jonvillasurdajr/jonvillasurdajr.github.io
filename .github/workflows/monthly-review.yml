@@ -2,8 +2,6 @@ name: Monthly SEO Review
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "41 14 1 * *"
 
 permissions:
   contents: read

@@ -3,9 +3,19 @@ name: SEO Health
 on:
   push:
     branches: [main]
+    paths:
+      - "**.md"
+      - "**.html"
+      - "_config.yml"
+      - "*.xml"
+      - "*.txt"
+      - "*.css"
+      - "*.js"
+      - "_includes/**"
+      - "_layouts/**"
+      - "assets/**"
+      - "scripts/seo_automation.py"
   workflow_dispatch:
-  schedule:
-    - cron: "17 13 * * 1"
 
 permissions:
   contents: read
