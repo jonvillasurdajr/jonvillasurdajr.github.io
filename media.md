@@ -4,6 +4,7 @@ title: Media and Speaking for Jon Villasurda Jr.
 seo_title: "Jon Villasurda Jr. | Media, Videos & Speaking"
 permalink: /media/
 description: "Videos, conference references, presentations, and speaking resources featuring Jon Villasurda Jr.'s Medicaid and behavioral health work."
+last_modified_at: 2026-07-23
 ---
 
 # Media and Speaking for Jon Villasurda Jr.

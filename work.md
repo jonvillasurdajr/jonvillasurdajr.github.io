@@ -4,6 +4,7 @@ title: Work of Jon Villasurda Jr.
 seo_title: "Jon Villasurda Jr. | Healthcare Consulting Work"
 permalink: /work/
 description: "Explore Jon Villasurda Jr.'s healthcare consulting work in Medicaid policy, behavioral health system design, analytics, finance, and program evaluation."
+last_modified_at: 2026-07-23
 ---
 
 # Work of Jon Villasurda Jr.

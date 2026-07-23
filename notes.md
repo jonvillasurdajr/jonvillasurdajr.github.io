@@ -4,6 +4,7 @@ title: Policy Notes by Jon Villasurda Jr.
 seo_title: "Healthcare Policy Notes | Jon Villasurda Jr."
 permalink: /notes/
 description: "Practical notes by Jon Villasurda Jr. on CCBHC implementation, behavioral health crisis systems, Medicaid delivery, measurement, and evaluation."
+last_modified_at: 2026-07-23
 ---
 
 # Policy Notes by Jon Villasurda Jr.

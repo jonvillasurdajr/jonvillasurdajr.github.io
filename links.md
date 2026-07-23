@@ -4,6 +4,7 @@ title: Official Links for Jon Villasurda Jr.
 seo_title: "Jon Villasurda Jr. | Official Professional Links"
 permalink: /links/
 description: "Verified professional profiles, publications, media, and policy resources for Jon Villasurda Jr., MPH, Senior Principal at Mercer."
+last_modified_at: 2026-07-23
 ---
 
 # Official Links for Jon Villasurda Jr.

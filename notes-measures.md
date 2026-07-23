@@ -4,6 +4,7 @@ title: Healthcare Performance Measure Notes by Jon Villasurda Jr.
 seo_title: "Healthcare Performance Measures | Jon Villasurda Jr."
 permalink: /notes/healthcare-performance-measures/
 description: "Healthcare performance measurement notes on operating, quality, finance, and evaluation metrics, with practical definition and action checks."
+last_modified_at: 2026-07-23
 ---
 
 # Healthcare Performance Measure Notes

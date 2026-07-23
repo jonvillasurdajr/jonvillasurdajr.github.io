@@ -4,6 +4,7 @@ title: Public Sector Analytics Notes by Jon Villasurda Jr.
 seo_title: "Public Sector Analytics | Jon Villasurda Jr."
 permalink: /notes/public-sector-analytics/
 description: "Public-sector analytics notes on baselines, measure definitions, operating dashboards, evaluation, limitations, and decision-focused reporting."
+last_modified_at: 2026-07-23
 ---
 
 # Public Sector Analytics Notes

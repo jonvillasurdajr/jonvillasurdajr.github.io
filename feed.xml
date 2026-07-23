@@ -1,0 +1,24 @@
+---
+layout: null
+permalink: /feed.xml
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ site.title | append: " — Professional Site Updates" | xml_escape }}</title>
+  <subtitle>{{ site.description | strip_newlines | xml_escape }}</subtitle>
+  <id>{{ '/' | absolute_url }}</id>
+  <link href="{{ '/feed.xml' | absolute_url }}" rel="self" type="application/atom+xml" />
+  <link href="{{ '/' | absolute_url }}" rel="alternate" type="text/html" />
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  {% assign feed_pages = site.pages | where: "layout", "default" | sort: "last_modified_at" | reverse %}
+  {% for feed_page in feed_pages limit: 20 %}
+  <entry>
+    <title>{{ feed_page.title | xml_escape }}</title>
+    <id>{{ feed_page.url | absolute_url }}</id>
+    <link href="{{ feed_page.url | absolute_url }}" rel="alternate" type="text/html" />
+    <updated>{{ feed_page.last_modified_at | default: site.time | date_to_xmlschema }}</updated>
+    <author><name>{{ site.author.name | xml_escape }}</name></author>
+    <summary>{{ feed_page.description | strip_newlines | xml_escape }}</summary>
+  </entry>
+  {% endfor %}
+</feed>
