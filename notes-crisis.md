@@ -4,6 +4,7 @@ title: Behavioral Health Crisis Systems Notes by Jon Villasurda Jr.
 seo_title: "Behavioral Health Crisis Systems | Jon Villasurda Jr."
 permalink: /notes/behavioral-health-crisis-systems/
 description: "Behavioral health crisis system design notes on access, triage, stabilization, follow-up, financing, data, handoffs, and accountability."
+last_modified_at: 2026-07-23
 ---
 
 # Behavioral Health Crisis Systems Notes

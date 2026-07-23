@@ -7,6 +7,7 @@ import sys
 import time
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -29,6 +30,8 @@ class Page(HTMLParser):
             relations=a.get("rel", "").lower().split()
             if "canonical" in relations: self.meta.setdefault("canonical",[]).append((a.get("href") or "").strip())
             if "icon" in relations: self.meta.setdefault("icon",[]).append((a.get("href") or "").strip())
+            if "alternate" in relations and a.get("type", "").lower() == "application/atom+xml":
+                self.meta.setdefault("alternate:atom",[]).append((a.get("href") or "").strip())
         elif tag == "a" and a.get("href"): self.links.append(a["href"].strip())
         elif tag == "h1": self.h1 += 1
         elif tag == "title": self.in_title=True; self.title_data=[]
@@ -63,7 +66,21 @@ def read_sitemap(sitemap, timeout):
     if status != 200: raise RuntimeError(f"{sitemap}: expected 200, got {status}")
     try: root=ET.fromstring(xml)
     except ET.ParseError as exc: raise RuntimeError(f"{sitemap}: invalid XML: {exc}") from exc
-    urls=[clean(x.text.strip()) for x in root.findall(".//{*}loc") if x.text and x.text.strip()]
+    urls=[]; now=datetime.now(timezone.utc)+timedelta(days=1)
+    for entry in root.findall(".//{*}url"):
+        location=entry.find("{*}loc"); modified=entry.find("{*}lastmod")
+        if location is None or not location.text or not location.text.strip():
+            raise RuntimeError(f"{sitemap}: contains a URL entry without <loc>")
+        url=clean(location.text.strip()); urls.append(url)
+        if modified is None or not modified.text or not modified.text.strip():
+            raise RuntimeError(f"{sitemap}: {url} is missing <lastmod>")
+        raw=modified.text.strip()
+        try:
+            parsed=datetime.fromisoformat(raw.replace("Z","+00:00"))
+            if parsed.tzinfo is None: parsed=parsed.replace(tzinfo=timezone.utc)
+        except ValueError as exc:
+            raise RuntimeError(f"{sitemap}: {url} has invalid <lastmod> {raw!r}") from exc
+        if parsed > now: raise RuntimeError(f"{sitemap}: {url} has future <lastmod> {raw!r}")
     if not urls: raise RuntimeError(f"{sitemap}: contains no <loc> URLs")
     host=urlsplit(sitemap).netloc.lower(); foreign=[u for u in urls if urlsplit(u).netloc.lower()!=host]
     if foreign: raise RuntimeError(f"{sitemap}: URLs outside {host}: {', '.join(foreign[:3])}")
@@ -93,16 +110,28 @@ def page_audit(url, timeout, host):
     if parser.h1 != 1: failures.append(f"{url}: expected exactly one H1, found {parser.h1}")
     if canonical and clean(urljoin(final,canonical)) != final: failures.append(f"{url}: canonical does not match final URL {final}")
     if not parser.jsonld: failures.append(f"{url}: missing JSON-LD")
+    schema_types=set()
     for item in parser.jsonld:
-        try: json.loads(item)
+        try:
+            parsed=json.loads(item)
+            objects=parsed if isinstance(parsed,list) else [parsed]
+            for obj in objects:
+                if isinstance(obj,dict) and obj.get("@type"): schema_types.add(obj["@type"])
         except json.JSONDecodeError as exc: failures.append(f"{url}: invalid JSON-LD: {exc.msg}")
+    if urlsplit(final).path == "/" and "ProfilePage" not in schema_types:
+        failures.append(f"{url}: homepage must include ProfilePage JSON-LD")
+    if urlsplit(final).path != "/" and "BreadcrumbList" not in schema_types:
+        failures.append(f"{url}: missing BreadcrumbList JSON-LD")
     og_url=value(parser.meta,"og:url",url,failures); og_title=value(parser.meta,"og:title",url,failures); og_desc=value(parser.meta,"og:description",url,failures); og_image=value(parser.meta,"og:image",url,failures); icon=value(parser.meta,"icon",url,failures)
+    atom=value(parser.meta,"alternate:atom",url,failures)
     if og_url and clean(urljoin(final,og_url)) != final: failures.append(f"{url}: og:url does not match final URL")
     if title and og_title and title != og_title: failures.append(f"{url}: og:title differs from title")
     if description and og_desc and description != og_desc: failures.append(f"{url}: og:description differs from description")
     for label, candidate in (("og:image", og_image), ("icon", icon)):
         if candidate and urlsplit(urljoin(final, candidate)).scheme not in ("http", "https"):
             failures.append(f"{url}: {label} must resolve to HTTP(S)")
+    if atom and clean(urljoin(final,atom)) != clean(f"https://{host}/feed.xml"):
+        failures.append(f"{url}: Atom feed link must resolve to https://{host}/feed.xml")
     for href in parser.links:
         absolute=clean(urljoin(final,href)); p=urlsplit(absolute)
         if p.scheme in ("http","https") and p.netloc.lower()==host: internal.append(absolute)
@@ -111,7 +140,7 @@ def page_audit(url, timeout, host):
 def discovery_audit(sitemap, timeout):
     """Validate crawler discovery files that are intentionally outside the sitemap."""
     failures=[]; parts=urlsplit(sitemap); root=f"{parts.scheme}://{parts.netloc}/"
-    robots_url=urljoin(root,"robots.txt"); key_url=urljoin(root,"indexnow-key.txt")
+    robots_url=urljoin(root,"robots.txt"); key_url=urljoin(root,"indexnow-key.txt"); feed_url=urljoin(root,"feed.xml")
     try:
         final,status,robots=fetch(robots_url,timeout)
         if final != clean(robots_url) or status != 200: failures.append(f"{robots_url}: expected a direct 200 response")
@@ -122,6 +151,13 @@ def discovery_audit(sitemap, timeout):
         if final != clean(key_url) or status != 200: failures.append(f"{key_url}: expected a direct 200 response")
         if not re.fullmatch(r"[0-9a-fA-F-]{8,128}",key.strip()): failures.append(f"{key_url}: invalid IndexNow key format")
     except RuntimeError as exc: failures.append(str(exc))
+    try:
+        final,status,feed=fetch(feed_url,timeout)
+        if final != clean(feed_url) or status != 200: failures.append(f"{feed_url}: expected a direct 200 response")
+        feed_root=ET.fromstring(feed)
+        if feed_root.tag != "{http://www.w3.org/2005/Atom}feed": failures.append(f"{feed_url}: expected an Atom feed")
+        if not feed_root.findall("{http://www.w3.org/2005/Atom}entry"): failures.append(f"{feed_url}: contains no entries")
+    except (RuntimeError, ET.ParseError) as exc: failures.append(f"{feed_url}: invalid Atom feed: {exc}")
     return failures
 
 def wait_revision(args):

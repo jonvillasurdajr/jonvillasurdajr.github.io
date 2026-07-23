@@ -3,6 +3,9 @@ layout: default
 title: Jon Villasurda Jr.
 seo_title: "Jon Villasurda Jr. | Medicaid & Behavioral Health"
 description: "Jon Villasurda Jr., MPH, is a Mercer Senior Principal focused on Medicaid, behavioral health, CCBHC implementation, and public-sector health strategy."
+schema_type: ProfilePage
+date_created: 2026-07-20
+last_modified_at: 2026-07-23
 ---
 
 # Jon Villasurda Jr., MPH

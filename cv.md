@@ -4,6 +4,7 @@ title: Public CV Summary for Jon Villasurda Jr.
 seo_title: "Jon Villasurda Jr. | Professional CV Summary"
 permalink: /cv/
 description: "Professional CV summary for Jon Villasurda Jr., MPH, covering Mercer, Michigan public-sector experience, education, and selected healthcare work."
+last_modified_at: 2026-07-23
 ---
 
 # Public CV Summary for Jon Villasurda Jr.

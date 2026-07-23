@@ -4,6 +4,7 @@ title: Medicaid Delivery Design Notes by Jon Villasurda Jr.
 seo_title: "Medicaid Delivery Design | Jon Villasurda Jr."
 permalink: /notes/medicaid-delivery-design/
 description: "Medicaid delivery design notes on beneficiary experience, implementation roles, financing, accountability, measurement, and evaluation."
+last_modified_at: 2026-07-23
 ---
 
 # Medicaid Delivery Design Notes

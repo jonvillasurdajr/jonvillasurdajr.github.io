@@ -4,55 +4,11 @@ permalink: /sitemap.xml
 ---
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {% assign sitemap_pages = site.pages | where: "layout", "default" | sort: "url" %}
+  {% for sitemap_page in sitemap_pages %}
   <url>
-    <loc>{{ '/' | absolute_url }}</loc>
+    <loc>{{ sitemap_page.url | absolute_url }}</loc>
+    {% if sitemap_page.last_modified_at %}<lastmod>{{ sitemap_page.last_modified_at | date: "%Y-%m-%d" }}</lastmod>{% endif %}
   </url>
-  <url>
-    <loc>{{ '/about/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/work/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/ccbhc/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/links/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/media/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/media/mercer-ccbhc-video/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/speaker-bio/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/cv/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/notes/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/notes/ccbhc-implementation/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/notes/behavioral-health-crisis-systems/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/notes/medicaid-delivery-design/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/notes/healthcare-performance-measures/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/notes/program-evaluation/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/notes/public-sector-analytics/' | absolute_url }}</loc>
-  </url>
-  <url>
-    <loc>{{ '/publications/' | absolute_url }}</loc>
-  </url>
+  {% endfor %}
 </urlset>

@@ -4,6 +4,7 @@ title: CCBHC Implementation Notes by Jon Villasurda Jr.
 seo_title: "CCBHC Implementation Notes | Jon Villasurda Jr."
 permalink: /notes/ccbhc-implementation/
 description: "A practical CCBHC implementation framework covering governance, clinical workflows, payment, measurement, access, quality, and sustainability."
+last_modified_at: 2026-07-23
 ---
 
 # CCBHC Implementation Notes

@@ -4,6 +4,7 @@ title: Program Evaluation Notes by Jon Villasurda Jr.
 seo_title: "Healthcare Program Evaluation | Jon Villasurda Jr."
 permalink: /notes/program-evaluation/
 description: "Healthcare program evaluation notes on decision framing, implementation monitoring, outcomes, data availability, baselines, and measure design."
+last_modified_at: 2026-07-23
 ---
 
 # Program Evaluation Notes

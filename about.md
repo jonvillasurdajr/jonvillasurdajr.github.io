@@ -5,6 +5,8 @@ seo_title: "About Jon Villasurda Jr. | Healthcare Consultant"
 permalink: /about/
 description: "Biography of Jon Villasurda Jr., MPH, a Mercer Senior Principal in Michigan working across Medicaid, behavioral health, analytics, finance, and evaluation."
 schema_type: ProfilePage
+date_created: 2026-07-20
+last_modified_at: 2026-07-23
 ---
 
 # About Jon Villasurda Jr., MPH

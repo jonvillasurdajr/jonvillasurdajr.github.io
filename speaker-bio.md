@@ -4,6 +4,7 @@ title: Speaker Bio for Jon Villasurda Jr.
 seo_title: "Jon Villasurda Jr. | Speaker Bio"
 permalink: /speaker-bio/
 description: "Short and extended speaker bios for Jon Villasurda Jr., MPH, with professional links and topics in Medicaid, CCBHCs, and behavioral health."
+last_modified_at: 2026-07-23
 ---
 
 # Speaker Bio for Jon Villasurda Jr.

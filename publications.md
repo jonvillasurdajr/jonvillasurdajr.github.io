@@ -4,6 +4,7 @@ title: Publications by Jon Villasurda Jr.
 seo_title: "Publications & Presentations | Jon Villasurda Jr."
 permalink: /publications/
 description: "Selected publications, reports, presentations, and videos featuring Jon Villasurda Jr.'s work in Medicaid, health homes, CCBHCs, and behavioral health."
+last_modified_at: 2026-07-23
 ---
 
 # Publications by Jon Villasurda Jr.
