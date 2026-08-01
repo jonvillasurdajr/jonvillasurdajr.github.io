@@ -11,10 +11,10 @@ author:
   full_name: Jon G. Villasurda Jr.
   credential: MPH
   job_title: Senior Principal
-  image: "https://avatars.githubusercontent.com/u/255794973?s=460&v=4"
+  image: "/assets/images/jon-g-villasurda-jr-headshot.jpg"
 social_links:
   github: https://github.com/jonvillasurdajr
-  linkedin: https://www.linkedin.com/in/jon-villasurda-jr-mph-54817619
+  linkedin: https://www.linkedin.com/in/jonvillasurdajr/
   chrt: https://chrt.org/bio/jon-villasurda/
 exclude:
   - GITHUB_PROFILE_README_TEMPLATE.md

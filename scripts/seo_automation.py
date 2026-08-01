@@ -129,9 +129,13 @@ def page_audit(url, timeout, host):
         else:
             person=people[0]
             if person.get("name") != "Jon G. Villasurda Jr.": failures.append(f"{url}: Person name must be Jon G. Villasurda Jr.")
+            if person.get("additionalName") != "G.": failures.append(f"{url}: Person additionalName must be G.")
             if person.get("honorificSuffix") != "Jr.": failures.append(f"{url}: Person honorificSuffix must be Jr.")
+            if person.get("identifier") != "jon-g-villasurda-jr": failures.append(f"{url}: Person identifier must be jon-g-villasurda-jr")
             if len(person.get("sameAs") or []) < 3: failures.append(f"{url}: Person sameAs must contain at least three corroborating profiles")
+            elif "https://www.linkedin.com/in/jonvillasurdajr/" not in person["sameAs"]: failures.append(f"{url}: Person sameAs must contain the canonical LinkedIn profile")
             if not isinstance(person.get("image"),dict) or not person["image"].get("contentUrl"): failures.append(f"{url}: Person image must be an ImageObject with contentUrl")
+            elif urlsplit(person["image"]["contentUrl"]).path != "/assets/images/jon-g-villasurda-jr-headshot.jpg": failures.append(f"{url}: Person image must use the canonical locally hosted headshot")
             if not isinstance(person.get("hasCredential"),dict): failures.append(f"{url}: Person must include hasCredential")
     if urlsplit(final).path != "/" and "BreadcrumbList" not in schema_types:
         failures.append(f"{url}: missing BreadcrumbList JSON-LD")

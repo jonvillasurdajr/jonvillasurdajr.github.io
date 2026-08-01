@@ -4,7 +4,7 @@ Senior Principal with Mercer Government based in Okemos, Michigan, focused on Me
 
 My work connects policy design with implementation, operations, payment, analytics, finance, measurement, and evaluation for publicly funded healthcare systems.
 
-[Website](https://jonvillasurdajr.github.io/) | [About](https://jonvillasurdajr.github.io/about/) | [CCBHC work](https://jonvillasurdajr.github.io/ccbhc/) | [Policy notes](https://jonvillasurdajr.github.io/notes/) | [Publications](https://jonvillasurdajr.github.io/publications/) | [LinkedIn](https://www.linkedin.com/in/jon-villasurda-jr-mph-54817619)
+[Website](https://jonvillasurdajr.github.io/) | [About](https://jonvillasurdajr.github.io/about/) | [CCBHC work](https://jonvillasurdajr.github.io/ccbhc/) | [Policy notes](https://jonvillasurdajr.github.io/notes/) | [Publications](https://jonvillasurdajr.github.io/publications/) | [LinkedIn](https://www.linkedin.com/in/jonvillasurdajr/)
 
 ## Focus areas
 
