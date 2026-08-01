@@ -3,13 +3,17 @@ layout: default
 title: Media and Speaking for Jon Villasurda Jr.
 seo_title: "Jon Villasurda Jr. | Media, Videos & Speaking"
 permalink: /media/
-description: "Videos, conference references, presentations, and speaking resources featuring Jon Villasurda Jr.'s Medicaid and behavioral health work."
-last_modified_at: 2026-07-23
+description: "Articles, videos, conference references, presentations, and speaking resources featuring Jon Villasurda Jr.'s healthcare work."
+last_modified_at: 2026-08-01
 ---
 
 # Media and Speaking for Jon Villasurda Jr.
 
 This page collects public video, conference, presentation, and speaking references for Jon Villasurda Jr., MPH.
+
+## Profile
+
+- [The young and uninsured](https://www.metrotimes.com/news/the-young-and-uninsured-2194448/) — a 2009 *Metro Times* profile of Jon Villasurda as a University of Michigan Master of Public Health student interested in healthcare access and reform
 
 ## Mercer CCBHC video
 
