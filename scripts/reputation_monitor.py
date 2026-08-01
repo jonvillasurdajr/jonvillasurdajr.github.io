@@ -20,6 +20,9 @@ DEFAULT_QUERIES = (
     '"Jon Villasurda"',
     '"Jon Villasurda Jr"',
     '"Jon Villasurda Sr"',
+    '"Jon Granger Villasurda"',
+    '"Jon Villasurda" (pleaded OR pled OR guilty OR sentencing)',
+    '"Jon Villasurda" (prostitution OR trafficking)',
 )
 
 
