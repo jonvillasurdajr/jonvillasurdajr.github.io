@@ -1,8 +1,8 @@
-name: Monthly SEO Review
+name: Daily Reputation Review
 
 on:
   schedule:
-    - cron: "41 13 3 * *"
+    - cron: "41 13 * * *"
   workflow_dispatch:
 
 permissions:
@@ -10,7 +10,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: monthly-seo-review
+  group: daily-reputation-review
   cancel-in-progress: false
 
 jobs:
@@ -19,12 +19,13 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Create monthly review issue
+      - name: Create or update daily review issue
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
-            const month = new Date().toISOString().slice(0, 7);
-            const title = `Personal SEO review ${month}`;
+            const date = new Date().toISOString().slice(0, 10);
+            const title = "Daily reputation review";
+            const marker = `<!-- daily-reputation-review:${date} -->`;
             const latestCommit = await github.rest.repos.getCommit({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -40,17 +41,10 @@ jobs:
               per_page: 100
             });
 
-            if (existing.data.some((issue) => issue.title === title)) {
-              core.info(`${title} already exists.`);
-              return;
-            }
-
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title,
-              labels: ["seo-review"],
-              body: [
+            const body = [
+                marker,
+                `## ${date}`,
+                "",
                 "## Search queries",
                 "- [ ] `Jon Villasurda`",
                 "- [ ] `Jon Villasurda Jr`",
@@ -87,7 +81,35 @@ jobs:
                 "",
                 "## Workflow maintenance",
                 `- [ ] Scheduled workflows can be disabled after 60 days without a default-branch commit. Latest default-branch commit is ${latestCommitDate.toISOString().slice(0, 10)} (${inactiveDays} days ago); make a commit if this is approaching 60 days.`
-              ].join("\n")
+              ].join("\n");
+
+            const openIssue = existing.data.find((issue) => issue.title === title);
+            if (openIssue) {
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: openIssue.number,
+                per_page: 100
+              });
+              if ((openIssue.body || "").includes(marker) || comments.some((comment) => (comment.body || "").includes(marker))) {
+                core.info(`${title} already contains the ${date} review.`);
+                return;
+              }
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: openIssue.number,
+                body
+              });
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              labels: ["seo-review"],
+              body
             });
       - name: Keep scheduled workflows active
         shell: bash
