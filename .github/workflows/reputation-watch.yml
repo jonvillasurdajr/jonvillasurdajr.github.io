@@ -1,0 +1,59 @@
+name: External Reputation Watch
+
+on:
+  schedule:
+    - cron: "23 12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: external-reputation-watch
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Restore prior monitoring state
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .cache/reputation-watch.json
+          key: reputation-watch-${{ github.run_id }}
+          restore-keys: |
+            reputation-watch-
+      - name: Check exact-name news and watched pages
+        id: watch
+        env:
+          REPUTATION_WATCH_URLS_JSON: ${{ secrets.REPUTATION_WATCH_URLS_JSON }}
+        run: python3 scripts/reputation_monitor.py
+      - name: Preserve detailed monitoring evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: reputation-watch-${{ github.run_id }}
+          path: .cache/reputation-watch-report.md
+          if-no-files-found: error
+          retention-days: 30
+      - name: Open or update a neutral review alert
+        if: steps.watch.outputs.review_count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ALERT_COUNT: ${{ steps.watch.outputs.alert_count }}
+          NEW_NEWS_COUNT: ${{ steps.watch.outputs.new_news_count }}
+          CHANGED_PAGE_COUNT: ${{ steps.watch.outputs.changed_page_count }}
+          ERROR_COUNT: ${{ steps.watch.outputs.error_count }}
+        run: |
+          title="External monitoring review needed"
+          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          body="The external monitor detected ${ALERT_COUNT} change(s): ${NEW_NEWS_COUNT} new news result(s) and ${CHANGED_PAGE_COUNT} watched-page change(s). It also encountered ${ERROR_COUNT} retrieval error(s). Review the evidence artifact in ${run_url}."
+          issue="$(gh issue list --repo "${{ github.repository }}" --state open --search "$title in:title" --json number,title --jq '.[] | select(.title == "External monitoring review needed") | .number' | head -n 1)"
+          if [ -n "$issue" ]; then
+            gh issue comment "$issue" --repo "${{ github.repository }}" --body "$body"
+          else
+            gh issue create --repo "${{ github.repository }}" --title "$title" --body "$body"
+          fi

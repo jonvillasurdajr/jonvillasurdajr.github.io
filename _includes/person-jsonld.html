@@ -7,13 +7,20 @@
   "url": "{{ '/' | absolute_url }}",
   "image": {
     "@type": "ImageObject",
+    "@id": "{{ '/#profile-image' | absolute_url }}",
     "url": {{ site.author.image | jsonify }},
+    "contentUrl": {{ site.author.image | jsonify }},
+    "caption": "Portrait of Jon G. Villasurda Jr., MPH",
+    "about": {
+      "@id": "{{ '/#person' | absolute_url }}"
+    },
     "width": 460,
     "height": 460
   },
   "mainEntityOfPage": "{{ '/' | absolute_url }}",
-  "name": {{ site.author.name | jsonify }},
+  "name": {{ site.author.full_name | jsonify }},
   "alternateName": [
+    "Jon G. Villasurda Jr.",
     "Jon Villasurda",
     "Jon Villasurda Jr",
     "Jon Villasurda, Jr."
@@ -36,6 +43,17 @@
       "url": "https://umich.edu/"
     }
   ],
+  "hasCredential": {
+    "@type": "EducationalOccupationalCredential",
+    "name": "Master of Public Health",
+    "credentialCategory": "degree",
+    "educationalLevel": "graduate degree",
+    "recognizedBy": {
+      "@type": "CollegeOrUniversity",
+      "name": "University of Michigan",
+      "url": "https://umich.edu/"
+    }
+  },
   "workLocation": {
     "@type": "Place",
     "name": "Okemos, Michigan",
