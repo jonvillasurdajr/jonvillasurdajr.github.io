@@ -1,0 +1,37 @@
+[
+  {
+    "match": "Michigan Attorney General",
+    "email": "agpress@michigan.gov",
+    "salutation": "Attorney General Press Office"
+  },
+  {
+    "match": "ClickOnDetroit",
+    "email": "news@wdiv.com",
+    "salutation": "WDIV/ClickOnDetroit team"
+  },
+  {
+    "match": "WDIV",
+    "email": "news@wdiv.com",
+    "salutation": "WDIV/ClickOnDetroit team"
+  },
+  {
+    "match": "Macomb Daily",
+    "email": "ken.kish@macombdaily.com",
+    "salutation": "Macomb Daily editorial team"
+  },
+  {
+    "match": "FOX 2",
+    "email": "fox2newsdesk@foxtv.com",
+    "salutation": "FOX 2 news desk"
+  },
+  {
+    "match": "13abc",
+    "email": "news@13abc.com",
+    "salutation": "13 Action News team"
+  },
+  {
+    "match": "WTVG",
+    "email": "news@13abc.com",
+    "salutation": "13 Action News team"
+  }
+]

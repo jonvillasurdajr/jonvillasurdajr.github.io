@@ -30,13 +30,16 @@ jobs:
         id: watch
         env:
           REPUTATION_WATCH_URLS_JSON: ${{ secrets.REPUTATION_WATCH_URLS_JSON }}
-        run: python3 scripts/reputation_monitor.py
+        run: python3 scripts/reputation_monitor.py --watch-config config/reputation-watch.json
       - name: Preserve detailed monitoring evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: reputation-watch-${{ github.run_id }}
-          path: .cache/reputation-watch-report.md
+          path: |
+            .cache/reputation-watch-report.md
+            .cache/reputation-watch-inventory.csv
+            .cache/reputation-watch-drafts.md
           if-no-files-found: error
           retention-days: 30
       - name: Open or update a neutral review alert
@@ -47,13 +50,20 @@ jobs:
           NEW_NEWS_COUNT: ${{ steps.watch.outputs.new_news_count }}
           CHANGED_PAGE_COUNT: ${{ steps.watch.outputs.changed_page_count }}
           ERROR_COUNT: ${{ steps.watch.outputs.error_count }}
+          NEW_ERROR_COUNT: ${{ steps.watch.outputs.new_error_count }}
+          HIGH_PRIORITY_COUNT: ${{ steps.watch.outputs.high_priority_count }}
         run: |
           title="External monitoring review needed"
           run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          body="The external monitor detected ${ALERT_COUNT} change(s): ${NEW_NEWS_COUNT} new news result(s) and ${CHANGED_PAGE_COUNT} watched-page change(s). It also encountered ${ERROR_COUNT} retrieval error(s). Review the evidence artifact in ${run_url}."
+          report="$(sed -n '1,180p' .cache/reputation-watch-report.md)"
+          body="$(printf '%s\n\n%s\n\n%s' "The external monitor detected ${ALERT_COUNT} change(s): ${NEW_NEWS_COUNT} new news result(s), ${CHANGED_PAGE_COUNT} watched-page change(s), and ${HIGH_PRIORITY_COUNT} high-priority review item(s). It encountered ${ERROR_COUNT} retrieval error(s), of which ${NEW_ERROR_COUNT} are new. Repeated identical retrieval errors do not create daily notifications." "$report" "The CSV inventory, full evidence report, and approval-gated correction drafts are attached to the workflow run: ${run_url}")"
           issue="$(gh issue list --repo "${{ github.repository }}" --state open --search "$title in:title" --json number,title --jq '.[] | select(.title == "External monitoring review needed") | .number' | head -n 1)"
           if [ -n "$issue" ]; then
+            gh issue edit "$issue" --repo "${{ github.repository }}" --add-assignee "${{ github.repository_owner }}"
             gh issue comment "$issue" --repo "${{ github.repository }}" --body "$body"
           else
-            gh issue create --repo "${{ github.repository }}" --title "$title" --body "$body"
+            gh issue create --repo "${{ github.repository }}" --title "$title" --body "$body" --assignee "${{ github.repository_owner }}"
           fi
+      - name: Publish the report in the workflow summary
+        if: always()
+        run: cat .cache/reputation-watch-report.md >> "$GITHUB_STEP_SUMMARY"

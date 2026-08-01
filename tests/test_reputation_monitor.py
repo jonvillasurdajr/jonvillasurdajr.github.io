@@ -1,7 +1,14 @@
 import unittest
 from unittest.mock import patch
 
-from scripts.reputation_monitor import DEFAULT_QUERIES, load_watched_pages, page_snapshot, parse_news_rss
+from scripts.reputation_monitor import (
+    DEFAULT_QUERIES,
+    attach_contact,
+    classify_news_item,
+    load_watched_pages,
+    page_snapshot,
+    parse_news_rss,
+)
 
 
 class ReputationMonitorTests(unittest.TestCase):
@@ -38,7 +45,42 @@ class ReputationMonitorTests(unittest.TestCase):
 
     def test_missing_or_empty_watch_secret_means_no_watched_pages(self):
         with patch.dict("os.environ", {"REPUTATION_WATCH_URLS_JSON": ""}):
-            self.assertEqual([], load_watched_pages())
+            self.assertEqual([], load_watched_pages("missing-config.json"))
+
+    def test_classifies_suffix_omission_as_high_priority(self):
+        item = {
+            "title": "Jon Villasurda named in new report",
+            "link": "https://example.com/story",
+            "source": "Example",
+            "published": "2026-08-01",
+            "query": '"Jon Villasurda"',
+        }
+        classified = classify_news_item(item)
+        self.assertEqual("high", classified["priority"])
+        self.assertIn("suffix", classified["issues"][0].lower())
+
+    def test_classifies_ambiguous_trafficking_plea_headline(self):
+        item = {
+            "title": "Clinton Township man pleads guilty in human trafficking ring",
+            "link": "https://example.com/story",
+            "source": "Example",
+            "published": "2026-08-01",
+            "query": '"Jon Villasurda"',
+        }
+        classified = classify_news_item(item)
+        self.assertEqual("high", classified["priority"])
+        self.assertIn("plea-characterization", classified["issues"][0].lower())
+
+    def test_verified_contact_creates_prefilled_gmail_link(self):
+        item = {
+            "title": "Example",
+            "link": "https://example.com/story",
+            "source": "WDIV",
+        }
+        enriched = attach_contact(item, [{"match": "WDIV", "email": "news@example.com"}])
+        self.assertEqual("news@example.com", enriched["contact_email"])
+        self.assertIn("mail.google.com/mail/", enriched["gmail_draft_url"])
+        self.assertIn("news%40example.com", enriched["gmail_draft_url"])
 
 
 if __name__ == "__main__":

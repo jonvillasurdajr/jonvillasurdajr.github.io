@@ -10,7 +10,12 @@ The Jekyll site presents a consistent professional profile, selected public work
 - A curated sitemap, permissive robots file, and IndexNow verification key
 - Deployment-aware health checks that crawl every sitemap URL and validate internal links
 - IndexNow submissions generated from the live sitemap after GitHub Pages publishes the current commit
-- A monthly review issue for Search Console, current references, and workflow continuity
+- A daily technical SEO audit with automatic failure/recovery issues
+- A daily external-reputation monitor that compares Google News and watched publication pages against prior state
+- Prioritized CSV evidence, workflow summaries, and approval-gated correction-request drafts for new reputation findings
+- A daily review issue for Search Console, AI visibility, current references, and workflow continuity
+
+The reputation monitor automatically preserves and classifies evidence, but it does not send correction demands or make legal conclusions. Generated outreach text must be checked against the complete article and court record before it is sent.
 
 ## Maintenance
 

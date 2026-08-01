@@ -2,7 +2,7 @@ name: SEO Health
 
 on:
   schedule:
-    - cron: "17 14 * * 1"
+    - cron: "17 14 * * *"
   push:
     branches: [main]
     paths:
