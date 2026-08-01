@@ -9,6 +9,7 @@
   "name": {{ seo_title | strip | jsonify }},
   "description": {{ seo_description | jsonify }},
   "inLanguage": {{ site.lang | jsonify }},
+  {% if page.date_published %}"datePublished": {{ page.date_published | date_to_xmlschema | jsonify }},{% endif %}
   {% if page.date_created %}"dateCreated": {{ page.date_created | date_to_xmlschema | jsonify }},{% endif %}
   {% if page.last_modified_at %}"dateModified": {{ page.last_modified_at | date_to_xmlschema | jsonify }},{% endif %}
   "isPartOf": {

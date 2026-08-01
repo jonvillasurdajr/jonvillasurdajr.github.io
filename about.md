@@ -6,7 +6,7 @@ permalink: /about/
 description: "Biography of Jon Villasurda Jr., MPH, a Mercer Senior Principal in Michigan working across Medicaid, behavioral health, analytics, finance, and evaluation."
 schema_type: ProfilePage
 date_created: 2026-07-20
-last_modified_at: 2026-07-31
+last_modified_at: 2026-08-01
 ---
 
 # Official Professional Profile: Jon G. Villasurda Jr., MPH
@@ -32,12 +32,15 @@ Jon's previous public-sector and association experience includes the Michigan De
 
 Jon earned a Bachelor of Science in psychology and a Master of Public Health in health management and policy from the University of Michigan.
 
+Jon graduated from Owosso High School in 2003 and was a member of the University of Michigan Marching Band drumline during the 2004 and 2005 seasons.
+
 ## Selected public work
 
 - [Implementing a Health Home: Michigan's Experience](https://journals.sagepub.com/doi/10.1177/1527154417749849)
 - [Mercer CCBHC Model discussion](/media/mercer-ccbhc-video/)
 - [The Role of Certified Community Behavioral Health Clinics in Crisis Services and Systems](https://www.thenationalcouncil.org/wp-content/uploads/2025/04/4.09.27_CCBHCs-and-Crisis-Paper_v3.pdf), national technical expert panel
 - [MI Health Home Model Overview](https://bhealthintegration.com/wp-content/uploads/2021/09/OHH-Day-1-02-MI-Health-Home-Model-Overview-Schell-Villasurda.pdf)
+- [The young and uninsured](https://www.metrotimes.com/news/the-young-and-uninsured-2194448/), a 2009 *Metro Times* profile about Jon's experience as an MPH student and interest in healthcare access
 
 ## Public reference pages
 

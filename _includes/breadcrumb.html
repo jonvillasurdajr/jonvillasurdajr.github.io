@@ -7,6 +7,9 @@
   {% elsif page.url contains "/media/" and page.url != "/media/" %}
     {% assign breadcrumb_section_name = "Media" %}
     {% assign breadcrumb_section_url = "/media/" %}
+  {% elsif page.url contains "/perspectives/" and page.url != "/perspectives/" %}
+    {% assign breadcrumb_section_name = "Perspectives" %}
+    {% assign breadcrumb_section_url = "/perspectives/" %}
   {% endif %}
 
   <nav class="breadcrumb" aria-label="Breadcrumb">

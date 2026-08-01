@@ -18,6 +18,7 @@ Jon G. Villasurda Jr. is a Senior Principal with Mercer Government based in Okem
 
 - [Explore CCBHC work and resources](/ccbhc/)
 - [Read healthcare policy notes](/notes/)
+- [Read personal and professional perspectives](/perspectives/)
 - [View publications and presentations](/publications/)
 - [Connect on LinkedIn]({{ site.social_links.linkedin }})
 
