@@ -1,10 +1,17 @@
 import unittest
 from unittest.mock import patch
 
-from scripts.reputation_monitor import load_watched_pages, page_snapshot, parse_news_rss
+from scripts.reputation_monitor import DEFAULT_QUERIES, load_watched_pages, page_snapshot, parse_news_rss
 
 
 class ReputationMonitorTests(unittest.TestCase):
+    def test_default_queries_cover_identity_and_plea_variants(self):
+        joined = "\n".join(DEFAULT_QUERIES)
+        self.assertIn('"Jon Granger Villasurda"', joined)
+        self.assertIn("sentencing", joined)
+        self.assertIn("prostitution", joined)
+        self.assertIn("trafficking", joined)
+
     def test_parses_google_news_items(self):
         xml = """<rss><channel><item>
           <title>Example result</title>
