@@ -11,7 +11,7 @@ last_modified_at: 2026-07-31
 
 # Official Professional Profile: Jon G. Villasurda Jr., MPH
 
-<img class="profile-image" src="{{ site.author.image | escape }}" alt="Portrait of Jon Villasurda Jr." width="180" height="180" loading="lazy" decoding="async" />
+<img class="profile-image" src="{{ site.author.image | relative_url | escape }}" alt="Portrait of Jon G. Villasurda Jr." width="180" height="180" loading="lazy" decoding="async" />
 
 Jon G. Villasurda Jr. is a Senior Principal with Mercer Government based in Okemos, Michigan. He works across Medicaid, behavioral health, and public-sector health strategy, with an emphasis on turning policy into workable operating, financing, measurement, and evaluation approaches.
 
@@ -42,6 +42,7 @@ Jon earned a Bachelor of Science in psychology and a Master of Public Health in 
 ## Public reference pages
 
 - [Work and professional background](/work/)
+- [Concise professional fact page](/who-is-jon-villasurda-jr/)
 - [CCBHC work and resources](/ccbhc/)
 - [Media and speaking](/media/)
 - [Speaker bio and media kit](/speaker-bio/)
@@ -51,5 +52,5 @@ Jon earned a Bachelor of Science in psychology and a Master of Public Health in 
 ## Professional profiles
 
 - [GitHub](https://github.com/jonvillasurdajr)
-- [LinkedIn](https://www.linkedin.com/in/jon-villasurda-jr-mph-54817619)
+- [LinkedIn]({{ site.social_links.linkedin }})
 - [CHRT bio](https://chrt.org/bio/jon-villasurda/)

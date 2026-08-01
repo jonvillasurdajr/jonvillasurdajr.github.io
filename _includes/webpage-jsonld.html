@@ -16,7 +16,7 @@
   },
   "author": {
     "@id": "{{ '/#person' | absolute_url }}"
-  }{% if page.url == '/' or page.url == '/about/' %},
+  }{% if page.schema_type == 'ProfilePage' %},
   "mainEntity": {
     "@id": "{{ '/#person' | absolute_url }}"
   }{% endif %}

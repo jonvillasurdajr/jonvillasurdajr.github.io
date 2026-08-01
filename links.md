@@ -4,7 +4,7 @@ title: Official Links for Jon Villasurda Jr.
 seo_title: "Jon Villasurda Jr. | Official Professional Links"
 permalink: /links/
 description: "Verified professional profiles, publications, media, and policy resources for Jon Villasurda Jr., MPH, Senior Principal at Mercer."
-last_modified_at: 2026-07-23
+last_modified_at: 2026-07-31
 ---
 
 # Official Links for Jon Villasurda Jr.
@@ -17,13 +17,13 @@ Jon Villasurda Jr. is a Senior Principal at Mercer based in Okemos, Michigan. Hi
 
 - [Professional site](https://jonvillasurdajr.github.io/)
 - [GitHub profile](https://github.com/jonvillasurdajr)
-- [LinkedIn profile](https://www.linkedin.com/in/jon-villasurda-jr-mph-54817619)
+- [LinkedIn profile]({{ site.social_links.linkedin }})
 - [CHRT biography](https://chrt.org/bio/jon-villasurda/)
-- [Connect on LinkedIn](https://www.linkedin.com/in/jon-villasurda-jr-mph-54817619)
 
 ## Public work on this site
 
 - [About Jon Villasurda Jr.](/about/)
+- [Who is Jon G. Villasurda Jr.?](/who-is-jon-villasurda-jr/)
 - [Professional background](/work/)
 - [CCBHC work and resources](/ccbhc/)
 - [Publications and presentations](/publications/)

@@ -11,7 +11,7 @@ last_modified_at: 2026-07-23
 
 This page provides public bio text, topic areas, and professional links for Jon Villasurda Jr., MPH, also known professionally as Jon Villasurda.
 
-<img class="profile-image" src="{{ site.author.image | escape }}" alt="Portrait of Jon Villasurda Jr." width="180" height="180" loading="lazy" decoding="async" />
+<img class="profile-image" src="{{ site.author.image | relative_url | escape }}" alt="Portrait of Jon G. Villasurda Jr." width="180" height="180" loading="lazy" decoding="async" />
 
 ## Short bio
 
@@ -35,7 +35,7 @@ Jon has worked across government, nonprofit, and consulting roles on policy deve
 
 - [Official professional links](/links/)
 - [Professional site](https://jonvillasurdajr.github.io/)
-- [LinkedIn profile](https://www.linkedin.com/in/jon-villasurda-jr-mph-54817619)
+- [LinkedIn profile]({{ site.social_links.linkedin }})
 - [GitHub profile](https://github.com/jonvillasurdajr)
 - [CHRT biography](https://chrt.org/bio/jon-villasurda/)
 

@@ -10,7 +10,7 @@ last_modified_at: 2026-07-31
 
 # Jon G. Villasurda Jr., MPH
 
-<img class="profile-image" src="{{ site.author.image | escape }}" alt="Portrait of Jon Villasurda Jr." width="180" height="180" fetchpriority="high" decoding="async" />
+<img class="profile-image" src="{{ site.author.image | relative_url | escape }}" alt="Portrait of Jon G. Villasurda Jr." width="180" height="180" fetchpriority="high" decoding="async" />
 
 **Medicaid, behavioral health, and public-sector health strategy**
 
@@ -19,7 +19,7 @@ Jon G. Villasurda Jr. is a Senior Principal with Mercer Government based in Okem
 - [Explore CCBHC work and resources](/ccbhc/)
 - [Read healthcare policy notes](/notes/)
 - [View publications and presentations](/publications/)
-- [Connect on LinkedIn](https://www.linkedin.com/in/jon-villasurda-jr-mph-54817619)
+- [Connect on LinkedIn]({{ site.social_links.linkedin }})
 
 ## Areas of focus
 
@@ -42,6 +42,7 @@ Jon G. Villasurda Jr. is a Senior Principal with Mercer Government based in Okem
 Jon's prior experience includes the Michigan Department of Health and Human Services and Michigan Primary Care Association. He earned a Bachelor of Science in psychology and a Master of Public Health in health management and policy from the University of Michigan.
 
 - [About Jon Villasurda Jr.](/about/)
+- [Who is Jon G. Villasurda Jr.?](/who-is-jon-villasurda-jr/)
 - [Professional background](/work/)
 - [Speaker bio](/speaker-bio/)
 - [Public CV summary](/cv/)

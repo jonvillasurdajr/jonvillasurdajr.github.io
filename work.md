@@ -34,7 +34,7 @@ That background includes Medicaid policy, program operations, strategic initiati
 ## Online profiles
 
 - [GitHub profile](https://github.com/jonvillasurdajr)
-- [LinkedIn profile](https://www.linkedin.com/in/jon-villasurda-jr-mph-54817619)
+- [LinkedIn profile]({{ site.social_links.linkedin }})
 - [CHRT biography](https://chrt.org/bio/jon-villasurda/)
 
 ## Recent featured work

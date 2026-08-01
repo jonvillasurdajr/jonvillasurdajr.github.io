@@ -8,14 +8,14 @@
   "image": {
     "@type": "ImageObject",
     "@id": "{{ '/#profile-image' | absolute_url }}",
-    "url": {{ site.author.image | jsonify }},
-    "contentUrl": {{ site.author.image | jsonify }},
+    "url": {{ site.author.image | absolute_url | jsonify }},
+    "contentUrl": {{ site.author.image | absolute_url | jsonify }},
     "caption": "Portrait of Jon G. Villasurda Jr., MPH",
     "about": {
       "@id": "{{ '/#person' | absolute_url }}"
     },
-    "width": 460,
-    "height": 460
+    "width": 400,
+    "height": 400
   },
   "mainEntityOfPage": "{{ '/' | absolute_url }}",
   "name": {{ site.author.full_name | jsonify }},
@@ -26,8 +26,10 @@
     "Jon Villasurda, Jr."
   ],
   "givenName": "Jon",
+  "additionalName": "G.",
   "familyName": "Villasurda",
   "honorificSuffix": "Jr.",
+  "identifier": "jon-g-villasurda-jr",
   "description": "Jon Villasurda Jr., MPH, is a Mercer Senior Principal focused on Medicaid, behavioral health, CCBHC implementation, and public-sector health strategy.",
   "disambiguatingDescription": "Michigan healthcare consultant Jon Villasurda Jr., MPH, who is also professionally listed as Jon Villasurda.",
   "jobTitle": {{ site.author.job_title | jsonify }},
