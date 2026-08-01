@@ -110,16 +110,29 @@ def page_audit(url, timeout, host):
     if parser.h1 != 1: failures.append(f"{url}: expected exactly one H1, found {parser.h1}")
     if canonical and clean(urljoin(final,canonical)) != final: failures.append(f"{url}: canonical does not match final URL {final}")
     if not parser.jsonld: failures.append(f"{url}: missing JSON-LD")
-    schema_types=set()
+    schema_types=set(); schema_objects=[]
     for item in parser.jsonld:
         try:
             parsed=json.loads(item)
             objects=parsed if isinstance(parsed,list) else [parsed]
             for obj in objects:
-                if isinstance(obj,dict) and obj.get("@type"): schema_types.add(obj["@type"])
+                if isinstance(obj,dict):
+                    schema_objects.append(obj)
+                    if obj.get("@type"): schema_types.add(obj["@type"])
         except json.JSONDecodeError as exc: failures.append(f"{url}: invalid JSON-LD: {exc.msg}")
     if urlsplit(final).path == "/" and "ProfilePage" not in schema_types:
         failures.append(f"{url}: homepage must include ProfilePage JSON-LD")
+    if urlsplit(final).path == "/":
+        people=[obj for obj in schema_objects if obj.get("@type") == "Person"]
+        if len(people) != 1:
+            failures.append(f"{url}: homepage must include exactly one Person JSON-LD object")
+        else:
+            person=people[0]
+            if person.get("name") != "Jon G. Villasurda Jr.": failures.append(f"{url}: Person name must be Jon G. Villasurda Jr.")
+            if person.get("honorificSuffix") != "Jr.": failures.append(f"{url}: Person honorificSuffix must be Jr.")
+            if len(person.get("sameAs") or []) < 3: failures.append(f"{url}: Person sameAs must contain at least three corroborating profiles")
+            if not isinstance(person.get("image"),dict) or not person["image"].get("contentUrl"): failures.append(f"{url}: Person image must be an ImageObject with contentUrl")
+            if not isinstance(person.get("hasCredential"),dict): failures.append(f"{url}: Person must include hasCredential")
     if urlsplit(final).path != "/" and "BreadcrumbList" not in schema_types:
         failures.append(f"{url}: missing BreadcrumbList JSON-LD")
     og_url=value(parser.meta,"og:url",url,failures); og_title=value(parser.meta,"og:title",url,failures); og_desc=value(parser.meta,"og:description",url,failures); og_image=value(parser.meta,"og:image",url,failures); icon=value(parser.meta,"icon",url,failures)

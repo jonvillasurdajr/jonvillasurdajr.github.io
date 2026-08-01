@@ -5,16 +5,16 @@ seo_title: "Jon Villasurda Jr. | Medicaid & Behavioral Health"
 description: "Jon Villasurda Jr., MPH, is a Mercer Senior Principal focused on Medicaid, behavioral health, CCBHC implementation, and public-sector health strategy."
 schema_type: ProfilePage
 date_created: 2026-07-20
-last_modified_at: 2026-07-23
+last_modified_at: 2026-07-31
 ---
 
-# Jon Villasurda Jr., MPH
+# Jon G. Villasurda Jr., MPH
 
 <img class="profile-image" src="{{ site.author.image | escape }}" alt="Portrait of Jon Villasurda Jr." width="180" height="180" fetchpriority="high" decoding="async" />
 
 **Medicaid, behavioral health, and public-sector health strategy**
 
-Jon Villasurda Jr. is a Senior Principal with Mercer Government based in Okemos, Michigan. His work connects policy design with implementation, operations, payment, analytics, finance, and evaluation for publicly funded healthcare systems.
+Jon G. Villasurda Jr. is a Senior Principal with Mercer Government based in Okemos, Michigan. He is also listed professionally as Jon Villasurda and Jon Villasurda Jr. His work connects policy design with implementation, operations, payment, analytics, finance, and evaluation for publicly funded healthcare systems.
 
 - [Explore CCBHC work and resources](/ccbhc/)
 - [Read healthcare policy notes](/notes/)
