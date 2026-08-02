@@ -3,9 +3,12 @@ name: External Reputation Watch
 on:
   schedule:
     - cron: "23 12 * * *"
+    - cron: "53 13 * * *"
+    - cron: "23 15 * * *"
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   issues: write
 
@@ -19,7 +22,39 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Decide whether this run is needed
+        id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+          CURRENT_RUN_ID: ${{ github.run_id }}
+        run: |
+          should_run=true
+          run_mode=manual
+
+          if [ "$EVENT_NAME" = "schedule" ]; then
+            day_start="$(date -u +%Y-%m-%dT00:00:00Z)"
+            prior_run_count="$(gh api "repos/${{ github.repository }}/actions/workflows/reputation-watch.yml/runs?event=schedule&per_page=100" \
+              --jq "[.workflow_runs[] | select((.id | tostring) != \"${CURRENT_RUN_ID}\") | select(.created_at >= \"${day_start}\") | select(.conclusion == \"success\" or .status == \"in_progress\" or .status == \"queued\")] | length")"
+
+            if [ "$prior_run_count" -gt 0 ]; then
+              should_run=false
+              run_mode=duplicate
+            elif [ "$EVENT_SCHEDULE" = "23 12 * * *" ]; then
+              run_mode=primary
+            else
+              run_mode=recovery
+            fi
+          fi
+
+          echo "should_run=$should_run" >> "$GITHUB_OUTPUT"
+          echo "run_mode=$run_mode" >> "$GITHUB_OUTPUT"
+          if [ "$should_run" = "false" ]; then
+            echo "A scheduled monitoring run already completed or is active today; this fallback is not needed." >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Restore prior monitoring state
+        if: steps.gate.outputs.should_run == 'true'
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .cache/reputation-watch.json
@@ -27,12 +62,13 @@ jobs:
           restore-keys: |
             reputation-watch-
       - name: Check exact-name news and watched pages
+        if: steps.gate.outputs.should_run == 'true'
         id: watch
         env:
           REPUTATION_WATCH_URLS_JSON: ${{ secrets.REPUTATION_WATCH_URLS_JSON }}
         run: python3 scripts/reputation_monitor.py --watch-config config/reputation-watch.json
       - name: Preserve detailed monitoring evidence
-        if: always()
+        if: steps.gate.outputs.should_run == 'true' && always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: reputation-watch-${{ github.run_id }}
@@ -43,7 +79,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - name: Open or update a neutral review alert
-        if: steps.watch.outputs.review_count != '0'
+        if: steps.gate.outputs.should_run == 'true' && steps.watch.outputs.review_count != '0'
         env:
           GH_TOKEN: ${{ github.token }}
           ALERT_COUNT: ${{ steps.watch.outputs.alert_count }}
@@ -64,6 +100,33 @@ jobs:
           else
             gh issue create --repo "${{ github.repository }}" --title "$title" --body "$body" --assignee "${{ github.repository_owner }}"
           fi
+      - name: Confirm successful daily monitoring
+        if: steps.gate.outputs.should_run == 'true' && steps.watch.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_MODE: ${{ steps.gate.outputs.run_mode }}
+          ALERT_COUNT: ${{ steps.watch.outputs.alert_count }}
+          NEW_NEWS_COUNT: ${{ steps.watch.outputs.new_news_count }}
+          CHANGED_PAGE_COUNT: ${{ steps.watch.outputs.changed_page_count }}
+          ERROR_COUNT: ${{ steps.watch.outputs.error_count }}
+        run: |
+          title="Daily reputation monitor status"
+          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          local_date="$(TZ=America/New_York date +%Y-%m-%d)"
+          draft_note="No new outreach draft requires review."
+          if [ "$ALERT_COUNT" -gt 0 ]; then
+            review_title="External monitoring review needed"
+            review_issue="$(gh issue list --repo "${{ github.repository }}" --state open --search "$review_title in:title" --json number,title,url --jq '.[] | select(.title == "External monitoring review needed") | .url' | head -n 1)"
+            draft_note="Review findings and any prefilled Gmail drafts: ${review_issue}. The complete editable draft file is in the reputation-watch-${{ github.run_id }} artifact."
+          fi
+          body="Monitoring completed for ${local_date}. Mode: ${RUN_MODE}. Results: ${NEW_NEWS_COUNT} new news result(s), ${CHANGED_PAGE_COUNT} watched-page change(s), ${ALERT_COUNT} total change(s), and ${ERROR_COUNT} retrieval error(s). ${draft_note} Evidence and workflow summary: ${run_url}"
+          issue="$(gh issue list --repo "${{ github.repository }}" --state open --search "$title in:title" --json number,title --jq '.[] | select(.title == "Daily reputation monitor status") | .number' | head -n 1)"
+          if [ -n "$issue" ]; then
+            gh issue edit "$issue" --repo "${{ github.repository }}" --add-assignee "${{ github.repository_owner }}"
+            gh issue comment "$issue" --repo "${{ github.repository }}" --body "$body"
+          else
+            gh issue create --repo "${{ github.repository }}" --title "$title" --body "$body" --assignee "${{ github.repository_owner }}"
+          fi
       - name: Publish the report in the workflow summary
-        if: always()
+        if: steps.gate.outputs.should_run == 'true' && always()
         run: cat .cache/reputation-watch-report.md >> "$GITHUB_STEP_SUMMARY"
