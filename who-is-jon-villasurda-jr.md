@@ -1,19 +1,21 @@
 ---
 layout: default
-title: Who Is Jon G. Villasurda Jr.?
-seo_title: "Who Is Jon Villasurda Jr.? | Professional Profile"
+title: Jon G. Villasurda Jr. in Okemos, Michigan
+seo_title: "Jon Villasurda Jr. | Okemos, Michigan Professional Profile"
 permalink: /who-is-jon-villasurda-jr/
-description: "Jon G. Villasurda Jr., MPH, is a Mercer Senior Principal in Michigan specializing in Medicaid, behavioral health, CCBHC implementation, and public-sector health strategy."
+description: "Official professional profile of Jon G. Villasurda Jr. in Okemos, Michigan, covering Medicaid, behavioral health, CCBHC implementation, and public-sector health strategy."
 schema_type: ProfilePage
 date_created: 2026-07-31
-last_modified_at: 2026-07-31
+last_modified_at: 2026-08-04
 ---
 
-# Who Is Jon G. Villasurda Jr.?
+# Jon G. Villasurda Jr. in Okemos, Michigan
 
 <img class="profile-image" src="{{ site.author.image | relative_url | escape }}" alt="Portrait of Jon G. Villasurda Jr." width="180" height="180" loading="eager" decoding="async" />
 
-**Jon G. Villasurda Jr., MPH, is a Michigan-based health policy professional and Senior Principal with Mercer Government.** His work focuses on Medicaid, behavioral health, Certified Community Behavioral Health Clinics (CCBHCs), public-sector health strategy, analytics, finance, measurement, and program evaluation.
+**Jon G. Villasurda Jr., MPH, is a health policy professional based in Okemos, Michigan, and a Senior Principal with Mercer Government.** His work focuses on Medicaid, behavioral health, Certified Community Behavioral Health Clinics (CCBHCs), public-sector health strategy, analytics, finance, measurement, and program evaluation.
+
+This official profile consolidates the professional identity, public work, education, and authoritative references associated with Jon Villasurda Jr. of Okemos, Michigan.
 
 ## Professional facts
 

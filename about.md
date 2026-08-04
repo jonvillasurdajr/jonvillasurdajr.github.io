@@ -1,19 +1,19 @@
 ---
 layout: default
 title: About Jon Villasurda Jr.
-seo_title: "About Jon Villasurda Jr. | Healthcare Consultant"
+seo_title: "About Jon Villasurda Jr. | Okemos, Michigan"
 permalink: /about/
-description: "Biography of Jon Villasurda Jr., MPH, a Mercer Senior Principal in Michigan working across Medicaid, behavioral health, analytics, finance, and evaluation."
+description: "Official biography of Jon G. Villasurda Jr. in Okemos, Michigan, covering healthcare policy, Medicaid, behavioral health, analytics, and evaluation."
 schema_type: ProfilePage
 date_created: 2026-07-20
-last_modified_at: 2026-08-01
+last_modified_at: 2026-08-04
 ---
 
 # Official Professional Profile: Jon G. Villasurda Jr., MPH
 
 <img class="profile-image" src="{{ site.author.image | relative_url | escape }}" alt="Portrait of Jon G. Villasurda Jr." width="180" height="180" loading="lazy" decoding="async" />
 
-Jon G. Villasurda Jr. is a Senior Principal with Mercer Government based in Okemos, Michigan. He works across Medicaid, behavioral health, and public-sector health strategy, with an emphasis on turning policy into workable operating, financing, measurement, and evaluation approaches.
+Jon G. Villasurda Jr. is a health policy professional based in Okemos, Michigan, and a Senior Principal with Mercer Government. He works across Medicaid, behavioral health, and public-sector health strategy, with an emphasis on turning policy into workable operating, financing, measurement, and evaluation approaches.
 
 Public sources may list him professionally as **Jon Villasurda** or **Jon Villasurda Jr.**
 
@@ -45,7 +45,7 @@ Jon graduated from Owosso High School in 2003 and was a member of the University
 ## Public reference pages
 
 - [Work and professional background](/work/)
-- [Concise professional fact page](/who-is-jon-villasurda-jr/)
+- [Jon G. Villasurda Jr. in Okemos, Michigan](/who-is-jon-villasurda-jr/)
 - [CCBHC work and resources](/ccbhc/)
 - [Media and speaking](/media/)
 - [Speaker bio and media kit](/speaker-bio/)

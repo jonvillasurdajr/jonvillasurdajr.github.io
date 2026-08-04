@@ -23,7 +23,7 @@ Jon Villasurda Jr. is a Senior Principal at Mercer based in Okemos, Michigan. Hi
 ## Public work on this site
 
 - [About Jon Villasurda Jr.](/about/)
-- [Who is Jon G. Villasurda Jr.?](/who-is-jon-villasurda-jr/)
+- [Jon G. Villasurda Jr. in Okemos, Michigan](/who-is-jon-villasurda-jr/)
 - [Professional background](/work/)
 - [CCBHC work and resources](/ccbhc/)
 - [Publications and presentations](/publications/)
