@@ -1,11 +1,11 @@
 ---
 layout: default
 title: Jon Villasurda Jr.
-seo_title: "Jon Villasurda Jr. | Medicaid & Behavioral Health"
-description: "Jon Villasurda Jr., MPH, is a Mercer Senior Principal focused on Medicaid, behavioral health, CCBHC implementation, and public-sector health strategy."
+seo_title: "Jon Villasurda Jr. | Okemos, Michigan"
+description: "Official site for Jon G. Villasurda Jr. of Okemos, Michigan, a health policy professional focused on Medicaid, behavioral health, CCBHCs, and public-sector strategy."
 schema_type: ProfilePage
 date_created: 2026-07-20
-last_modified_at: 2026-07-31
+last_modified_at: 2026-08-04
 ---
 
 # Jon G. Villasurda Jr., MPH
@@ -14,7 +14,7 @@ last_modified_at: 2026-07-31
 
 **Medicaid, behavioral health, and public-sector health strategy**
 
-Jon G. Villasurda Jr. is a Senior Principal with Mercer Government based in Okemos, Michigan. He is also listed professionally as Jon Villasurda and Jon Villasurda Jr. His work connects policy design with implementation, operations, payment, analytics, finance, and evaluation for publicly funded healthcare systems.
+Jon G. Villasurda Jr. is a health policy professional based in Okemos, Michigan, and a Senior Principal with Mercer Government. He is also listed professionally as Jon Villasurda and Jon Villasurda Jr. His work connects policy design with implementation, operations, payment, analytics, finance, and evaluation for publicly funded healthcare systems.
 
 - [Explore CCBHC work and resources](/ccbhc/)
 - [Read healthcare policy notes](/notes/)
@@ -43,7 +43,7 @@ Jon G. Villasurda Jr. is a Senior Principal with Mercer Government based in Okem
 Jon's prior experience includes the Michigan Department of Health and Human Services and Michigan Primary Care Association. He earned a Bachelor of Science in psychology and a Master of Public Health in health management and policy from the University of Michigan.
 
 - [About Jon Villasurda Jr.](/about/)
-- [Who is Jon G. Villasurda Jr.?](/who-is-jon-villasurda-jr/)
+- [Jon G. Villasurda Jr. in Okemos, Michigan](/who-is-jon-villasurda-jr/)
 - [Professional background](/work/)
 - [Speaker bio](/speaker-bio/)
 - [Public CV summary](/cv/)
