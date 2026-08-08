@@ -5,7 +5,7 @@ seo_title: "Jon Villasurda Jr. | Okemos, Michigan"
 description: "Official site for Jon G. Villasurda Jr. of Okemos, Michigan, a health policy professional focused on Medicaid, behavioral health, CCBHCs, and public-sector strategy."
 schema_type: ProfilePage
 date_created: 2026-07-20
-last_modified_at: 2026-08-04
+last_modified_at: 2026-08-08
 ---
 
 # Jon G. Villasurda Jr., MPH
@@ -31,6 +31,7 @@ Jon G. Villasurda Jr. is a health policy professional based in Okemos, Michigan,
 
 ## Featured public work
 
+- [2026 CCBHC Annual State Meeting facilitator announcement](/media/ccbhc-annual-state-meeting-2026/) from Mercer Government
 - [Mercer CCBHC Model discussion](/media/mercer-ccbhc-video/) on aligning policy, operations, and payment for implementation and sustainability
 - [Implementing a Health Home: Michigan's Experience](https://journals.sagepub.com/doi/10.1177/1527154417749849), a peer-reviewed article coauthored by Jon Villasurda
 - [The Role of Certified Community Behavioral Health Clinics in Crisis Services and Systems](https://www.thenationalcouncil.org/wp-content/uploads/2025/04/4.09.27_CCBHCs-and-Crisis-Paper_v3.pdf), developed with a national technical expert panel that included Jon Villasurda

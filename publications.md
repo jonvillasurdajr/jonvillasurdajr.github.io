@@ -4,7 +4,7 @@ title: Publications by Jon Villasurda Jr.
 seo_title: "Publications & Presentations | Jon Villasurda Jr."
 permalink: /publications/
 description: "Selected publications, reports, presentations, and videos featuring Jon Villasurda Jr.'s work in Medicaid, health homes, CCBHCs, and behavioral health."
-last_modified_at: 2026-07-23
+last_modified_at: 2026-08-08
 ---
 
 # Publications by Jon Villasurda Jr.
@@ -30,6 +30,8 @@ This page collects selected publications, expert-panel work, presentations, and 
 
 - [Mercer behavioral health video series: CCBHC Model](https://www.mercer-government.mercer.com/our-insights.html)
   Public Mercer feature highlighting a discussion with Dr. Jason Vogler, Jon Villasurda, and Toby Ramsdell on implementing and sustaining CCBHCs.
+- [2026 CCBHC Annual State Meeting facilitator announcement](/media/ccbhc-annual-state-meeting-2026/)
+  Mercer Government featured Jon G. Villasurda Jr. as an invited breakout-session facilitator for a peer discussion on state CCBHC integration, implementation challenges, and long-term system goals.
 - [Watch the CCBHC Model video](https://bcove.video/3OfDsNN)
 
 ## Employer references
