@@ -33,5 +33,10 @@
     "match": "WTVG",
     "email": "news@13abc.com",
     "salutation": "13 Action News team"
+  },
+  {
+    "match": "Detroit News",
+    "email": "correct@detroitnews.com",
+    "salutation": "Detroit News corrections team"
   }
 ]
