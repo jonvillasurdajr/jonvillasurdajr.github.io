@@ -4,7 +4,7 @@ title: Jon Villasurda Jr. and CCBHC Work
 seo_title: "Jon Villasurda Jr. | CCBHC Strategy & Implementation"
 permalink: /ccbhc/
 description: "CCBHC implementation resources and public work featuring Jon Villasurda Jr. on policy, operations, payment, crisis systems, and sustainability."
-last_modified_at: 2026-07-23
+last_modified_at: 2026-08-08
 ---
 
 # Jon Villasurda Jr. and CCBHC Work
@@ -13,6 +13,8 @@ Jon Villasurda Jr., MPH, works on behavioral health policy and delivery system d
 
 ## Featured Mercer resources
 
+- [2026 CCBHC Annual State Meeting facilitator announcement](/media/ccbhc-annual-state-meeting-2026/)
+  Mercer Government featured Jon G. Villasurda Jr. as an invited breakout-session facilitator for a peer discussion on state CCBHC integration, implementation challenges, and long-term system goals.
 - [Mercer CCBHC video page](/media/mercer-ccbhc-video/)
   Dedicated page for the public CCBHC Model video reference and related resources.
 - [Mercer behavioral health video series: CCBHC Model](https://www.mercer-government.mercer.com/our-insights.html)
