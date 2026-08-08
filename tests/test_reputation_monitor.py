@@ -5,6 +5,7 @@ from scripts.reputation_monitor import (
     DEFAULT_QUERIES,
     attach_contact,
     classify_news_item,
+    is_relevant_news_item,
     load_watched_pages,
     page_snapshot,
     parse_news_rss,
@@ -15,6 +16,8 @@ class ReputationMonitorTests(unittest.TestCase):
     def test_default_queries_cover_identity_and_plea_variants(self):
         joined = "\n".join(DEFAULT_QUERIES)
         self.assertIn('"Jon Granger Villasurda"', joined)
+        self.assertIn('"Jon G. Villasurda Jr."', joined)
+        self.assertIn("Mercer", joined)
         self.assertIn("sentencing", joined)
         self.assertIn("prostitution", joined)
         self.assertIn("trafficking", joined)
@@ -31,6 +34,27 @@ class ReputationMonitorTests(unittest.TestCase):
         self.assertEqual(1, len(items))
         self.assertEqual("example-id", items[0]["id"])
         self.assertEqual("Example News", items[0]["source"])
+
+    def test_filters_unrelated_exact_query_match(self):
+        item = {
+            "title": "Michigan State basketball travels to UConn for an exhibition game - Facebook",
+            "source": "facebook.com",
+        }
+        self.assertFalse(is_relevant_news_item(item))
+
+    def test_keeps_case_headline_that_omits_name(self):
+        item = {
+            "title": "Clinton Township man pleads guilty in connection with human trafficking ring",
+            "source": "Example News",
+        }
+        self.assertTrue(is_relevant_news_item(item))
+
+    def test_keeps_professional_headline_that_omits_name(self):
+        item = {
+            "title": "Mercer leader discusses behavioral health access in Michigan",
+            "source": "Example News",
+        }
+        self.assertTrue(is_relevant_news_item(item))
 
     def test_page_snapshot_tracks_metadata_and_name_context(self):
         html = """<html><head><title>Updated report</title>

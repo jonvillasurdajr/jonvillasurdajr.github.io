@@ -19,9 +19,11 @@ from urllib.request import Request, urlopen
 USER_AGENT = "jon-villasurda-reputation-watch/1.0"
 DEFAULT_QUERIES = (
     '"Jon Villasurda"',
+    '"Jon G. Villasurda Jr."',
     '"Jon Villasurda Jr"',
     '"Jon Villasurda Sr"',
     '"Jon Granger Villasurda"',
+    '"Jon Villasurda" (Mercer OR Okemos OR CCBHC)',
     '"Jon Villasurda" (pleaded OR pled OR guilty OR sentencing)',
     '"Jon Villasurda" (prostitution OR trafficking)',
 )
@@ -29,6 +31,8 @@ DEFAULT_QUERIES = (
 PLEA_TERMS = re.compile(r"\b(plead(?:ed|s)?|pled|guilty|convict(?:ed|ion)?)\b", re.I)
 TRAFFICKING_TERMS = re.compile(r"\b(?:human|sex)[ -]?trafficking\b|trafficking ring", re.I)
 OFFENSE_TERMS = re.compile(r"transport(?:ing|ation)? (?:a person |women? )?for (?:the purposes? of )?prostitution", re.I)
+DISPOSITION_TERMS = re.compile(r"\b(?:sentenc(?:e|ed|ing)|probation|prison)\b", re.I)
+PROFESSIONAL_TERMS = re.compile(r"\b(?:mercer|okemos|ccbhc|healthcare|health care|behavioral health)\b", re.I)
 
 
 def fetch(url, timeout=30):
@@ -75,6 +79,17 @@ def parse_news_rss(xml, query):
             "published": published_iso,
         })
     return results
+
+
+def is_relevant_news_item(item):
+    """Reject unrelated Google News matches while retaining identity and case coverage."""
+    title = item.get("title", "")
+    if re.search(r"\bvillasurda\b", title, re.I):
+        return True
+    if PROFESSIONAL_TERMS.search(title):
+        return True
+    case_context = TRAFFICKING_TERMS.search(title) or OFFENSE_TERMS.search(title)
+    return bool(case_context and (PLEA_TERMS.search(title) or DISPOSITION_TERMS.search(title)))
 
 
 class RelevantPageParser(HTMLParser):
@@ -386,7 +401,8 @@ def monitor(args):
         except (OSError, ET.ParseError) as exc:
             errors.append(f"News query {query!r}: {exc}")
 
-    deduplicated_news = {item["id"]: item for item in current_news}
+    relevant_news = [item for item in current_news if is_relevant_news_item(item)]
+    deduplicated_news = {item["id"]: item for item in relevant_news}
     new_news = [] if baseline else [
         item for key, item in deduplicated_news.items() if key not in state.get("seen_news", {})
     ]
