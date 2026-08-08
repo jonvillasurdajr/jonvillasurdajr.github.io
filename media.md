@@ -4,7 +4,7 @@ title: Media and Speaking for Jon Villasurda Jr.
 seo_title: "Jon Villasurda Jr. | Media, Videos & Speaking"
 permalink: /media/
 description: "Articles, videos, conference references, presentations, and speaking resources featuring Jon Villasurda Jr.'s healthcare work."
-last_modified_at: 2026-08-01
+last_modified_at: 2026-08-08
 ---
 
 # Media and Speaking for Jon Villasurda Jr.
@@ -26,6 +26,7 @@ Mercer's behavioral health video series includes a CCBHC Model discussion with D
 
 ## Conference references
 
+- [2026 CCBHC Annual State Meeting facilitator announcement](/media/ccbhc-annual-state-meeting-2026/) — Mercer Government featured Jon G. Villasurda Jr. as an invited breakout-session facilitator focused on state CCBHC integration and implementation
 - [Mercer Government resources for NatCon 2025](https://www.mercer-government.mercer.com/content/mercer-sites/mercer-government/global/en/resource-hub/NatCon25.html)
 
 ## Presentations
