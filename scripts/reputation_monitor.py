@@ -26,6 +26,8 @@ DEFAULT_QUERIES = (
     '"Jon Villasurda" (Mercer OR Okemos OR CCBHC)',
     '"Jon Villasurda" (pleaded OR pled OR guilty OR sentencing)',
     '"Jon Villasurda" (prostitution OR trafficking)',
+    '"Jon Villasurda" ("human trafficking case" OR "transporting a person for prostitution")',
+    '"Jon Villasurda" (headline OR article OR news OR publication)',
 )
 
 PLEA_TERMS = re.compile(r"\b(plead(?:ed|s)?|pled|guilty|convict(?:ed|ion)?)\b", re.I)
@@ -33,6 +35,12 @@ TRAFFICKING_TERMS = re.compile(r"\b(?:human|sex)[ -]?trafficking\b|trafficking r
 OFFENSE_TERMS = re.compile(r"transport(?:ing|ation)? (?:a person |women? )?for (?:the purposes? of )?prostitution", re.I)
 DISPOSITION_TERMS = re.compile(r"\b(?:sentenc(?:e|ed|ing)|probation|prison)\b", re.I)
 PROFESSIONAL_TERMS = re.compile(r"\b(?:mercer|okemos|ccbhc|healthcare|health care|behavioral health)\b", re.I)
+PAGE_MATERIAL_TERMS = re.compile(
+    r"\bvillasurda\b|\b(?:plead(?:ed|s)?|pled|guilty|convict(?:ed|ion)?)\b|"
+    r"transport(?:ing|ation)?|prostitution|(?:human|sex)[ -]?trafficking|trafficking ring|"
+    r"\b(?:sentenc(?:e|ed|ing)|probation|prison)\b",
+    re.I,
+)
 
 
 def fetch(url, timeout=30):
@@ -71,7 +79,9 @@ def parse_news_rss(xml, query):
         except (TypeError, ValueError):
             published_iso = published
         results.append({
-            "id": guid or stable_key(title, link),
+            # A stable link-based fallback lets the monitor detect a changed
+            # headline instead of treating the revised result as a new story.
+            "id": guid or stable_key(link),
             "query": query,
             "title": title,
             "link": link,
@@ -145,6 +155,20 @@ def relevant_context(text, term="villasurda", radius=280):
     return contexts[:12]
 
 
+def material_contexts(text, radius=360, limit=20):
+    """Keep stable legal/identity sentences and drop navigation boilerplate."""
+    sentences = [normalized(sentence) for sentence in re.split(r"(?<=[.!?])\s+", text)]
+    contexts = []
+    for sentence in sentences:
+        if not sentence or not PAGE_MATERIAL_TERMS.search(sentence):
+            continue
+        if sentence not in contexts:
+            contexts.append(sentence)
+    if contexts:
+        return contexts[:limit]
+    return relevant_context(text, radius=radius)[:limit]
+
+
 def page_snapshot(label, requested_url, final_url, html):
     parser = RelevantPageParser()
     parser.feed(html)
@@ -158,7 +182,7 @@ def page_snapshot(label, requested_url, final_url, html):
         "description": parser.meta.get("description", ""),
         "og_title": parser.meta.get("og:title", ""),
         "og_description": parser.meta.get("og:description", ""),
-        "contexts": relevant_context(visible_text),
+        "contexts": material_contexts(visible_text),
     }
     snapshot["fingerprint"] = stable_key(json.dumps(snapshot, sort_keys=True, ensure_ascii=False))
     return snapshot
@@ -203,13 +227,21 @@ def classify_news_item(item):
     if not issues:
         issues.append("New exact-name result; review for identity accuracy and relevance.")
 
-    action = {
+    return {
+        **item,
+        "priority": priority,
+        "issues": issues,
+        "recommended_action": recommended_action(priority),
+    }
+
+
+def recommended_action(priority):
+    return {
         "critical": "Preserve screenshots and court evidence; obtain legal review before escalation.",
         "high": "Verify the full article and metadata, then prepare a narrow factual correction request.",
         "medium": "Review the full context and consider a clarification request if readers could infer the wrong conviction.",
         "low": "Log the result and monitor; no outreach unless the full text reveals an issue.",
     }[priority]
-    return {**item, "priority": priority, "issues": issues, "recommended_action": action}
 
 
 def max_priority(left, right):
@@ -246,20 +278,22 @@ def attach_contact(item, contacts):
     return {**item, "contact_email": match["email"], "gmail_draft_url": f"https://mail.google.com/mail/?{query}"}
 
 
-def write_inventory(path, triage_items):
+def write_inventory(path, items):
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     with Path(path).open("w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle)
         writer.writerow([
             "priority", "published", "source", "title", "url", "query",
             "review_issues", "recommended_action", "contact_email", "gmail_draft_url",
+            "status", "first_seen", "last_seen",
         ])
-        for item in triage_items:
+        for item in items:
             writer.writerow([
-                item["priority"], item["published"], item["source"], item["title"],
-                item["link"], item["query"], " | ".join(item["issues"]),
-                item["recommended_action"], item.get("contact_email", ""),
-                item.get("gmail_draft_url", ""),
+                item.get("priority", "low"), item.get("published", ""), item.get("source", ""),
+                item.get("title", ""), item.get("link", ""), item.get("query", ""),
+                " | ".join(item.get("issues", [])), item.get("recommended_action", ""),
+                item.get("contact_email", ""), item.get("gmail_draft_url", ""),
+                item.get("status", ""), item.get("first_seen", ""), item.get("last_seen", ""),
             ])
 
 
@@ -272,6 +306,7 @@ def correction_draft(item):
         f"- Source: {item['source'] or 'Unknown'}",
         f"- URL: {item['link']}",
         f"- Review basis: {issues}",
+        f"- Detection: {item.get('status', 'new')}",
         f"- Suggested recipient: {item.get('contact_email') or 'Contact research required'}",
         f"- [Open prefilled Gmail draft]({item['gmail_draft_url']})" if item.get("gmail_draft_url") else "- Gmail link unavailable until a verified contact is added.",
         "",
@@ -300,7 +335,7 @@ def write_drafts(path, triage_items):
     lines = [
         "# Approval-gated correction request drafts",
         "",
-        "These drafts are generated for review only. No message has been sent.",
+        "These drafts are generated for review only. No message has been sent. New results and changed headlines are included when they need review.",
         "",
     ]
     actionable = [item for item in triage_items if item["priority"] in ("critical", "high", "medium")]
@@ -312,7 +347,8 @@ def write_drafts(path, triage_items):
     Path(path).write_text("\n".join(lines), encoding="utf-8")
 
 
-def write_report(path, baseline, triage_items, changed_pages, errors):
+def write_report(path, baseline, triage_items, changed_pages, errors, headline_changes=None):
+    headline_changes = headline_changes or []
     lines = [
         "# External reputation monitoring report",
         "",
@@ -321,7 +357,12 @@ def write_report(path, baseline, triage_items, changed_pages, errors):
     ]
     if baseline:
         lines.extend(["Initial baseline established; no alert was generated.", ""])
-    lines.extend([f"New news results: **{len(triage_items)}**", f"Changed watched pages: **{len(changed_pages)}**", ""])
+    lines.extend([
+        f"New news results: **{len(triage_items)}**",
+        f"Headline changes on watched results: **{len(headline_changes)}**",
+        f"Changed watched pages: **{len(changed_pages)}**",
+        "",
+    ])
     if triage_items:
         lines.append("## New exact-name news results")
         lines.append("")
@@ -335,6 +376,23 @@ def write_report(path, baseline, triage_items, changed_pages, errors):
                 f"- Review issue: {' '.join(item['issues'])}",
                 f"- Recommended action: {item['recommended_action']}",
                 f"- [Open prefilled Gmail draft]({item['gmail_draft_url']})" if item.get("gmail_draft_url") and item["priority"] != "low" else "- No outreach draft recommended for this item." if item["priority"] == "low" else "- Verified recipient still needed before outreach.",
+                "",
+            ])
+        lines.append("")
+    if headline_changes:
+        lines.append("## Headline changes on previously observed results")
+        lines.append("")
+        for item in headline_changes:
+            source = f" - {item['source']}" if item["source"] else ""
+            lines.extend([
+                f"### [{item['title']}]({item['link']})",
+                "",
+                f"- Priority: **{item['priority']}**{source}",
+                f"- First observed: {item.get('first_seen', 'unknown')}",
+                f"- Previously observed headline: {item.get('previous_title', 'unknown')}",
+                f"- Review issue: {' '.join(item['issues'])}",
+                f"- Recommended action: {item['recommended_action']}",
+                f"- [Open prefilled Gmail draft]({item['gmail_draft_url']})" if item.get("gmail_draft_url") and item["priority"] != "low" else "- Verify before any outreach; no message was sent.",
                 "",
             ])
         lines.append("")
@@ -389,11 +447,28 @@ def load_watched_pages(config_path=None):
     return pages
 
 
+def history_entry(value):
+    """Read both the legacy first-seen timestamp and the richer history record."""
+    if isinstance(value, dict):
+        return dict(value)
+    if isinstance(value, str):
+        return {"first_seen": value, "last_seen": value}
+    return {}
+
+
+def headlines_differ(previous_title, current_title):
+    return bool(
+        previous_title
+        and normalized(previous_title).casefold() != normalized(current_title).casefold()
+    )
+
+
 def monitor(args):
     state = read_json(args.state, {"seen_news": {}, "pages": {}, "errors": []})
     baseline = not Path(args.state).exists()
     errors = []
     current_news = []
+    contacts = load_contacts(args.contacts)
     for query in args.query or DEFAULT_QUERIES:
         try:
             _, xml = fetch(news_url(query), args.timeout)
@@ -403,13 +478,97 @@ def monitor(args):
 
     relevant_news = [item for item in current_news if is_relevant_news_item(item)]
     deduplicated_news = {item["id"]: item for item in relevant_news}
-    new_news = [] if baseline else [
-        item for key, item in deduplicated_news.items() if key not in state.get("seen_news", {})
-    ]
     now = datetime.now(timezone.utc).isoformat()
-    seen_news = dict(state.get("seen_news", {}))
-    for key in deduplicated_news:
-        seen_news.setdefault(key, now)
+    stored_news = state.get("seen_news", {})
+    if not isinstance(stored_news, dict):
+        stored_news = {}
+    seen_news = dict(stored_news)
+    new_news = []
+    headline_changes = []
+    inventory_items = []
+    current_keys = set()
+
+    for key, item in deduplicated_news.items():
+        # Older state files used a title-plus-link hash when RSS omitted a
+        # guid. Migrate that record quietly so deployment does not create a
+        # false burst of new alerts.
+        legacy_key = stable_key(item["title"], item["link"])
+        record_key = key if key in stored_news else legacy_key if legacy_key in stored_news else None
+        previous = history_entry(stored_news.get(record_key)) if record_key else {}
+        known = record_key is not None
+        previous_title = previous.get("last_title", "")
+
+        if baseline:
+            status = "baseline"
+        elif not known:
+            status = "new"
+        elif headlines_differ(previous_title, item["title"]):
+            status = "headline_change"
+        else:
+            status = "known"
+
+        classified = attach_contact(classify_news_item(item), contacts)
+        if status == "headline_change":
+            classified["issues"] = [
+                "Headline changed since the previous observation; compare the current headline with the article body and court disposition.",
+                *classified["issues"],
+            ]
+            classified["priority"] = max_priority(classified["priority"], "medium")
+            classified["recommended_action"] = recommended_action(classified["priority"])
+            classified["previous_title"] = previous_title
+
+        classified.update({
+            "status": status,
+            "first_seen": previous.get("first_seen") or now,
+            "last_seen": now,
+        })
+        inventory_items.append(classified)
+        current_keys.add(key)
+
+        seen_news[key] = {
+            "first_seen": classified["first_seen"],
+            "last_seen": now,
+            "last_title": item["title"],
+            "last_link": item["link"],
+            "source": item.get("source", ""),
+            "published": item.get("published", ""),
+            "query": item.get("query", ""),
+            "priority": classified["priority"],
+            "issues": classified["issues"],
+            "recommended_action": classified["recommended_action"],
+            "contact_email": classified.get("contact_email", ""),
+        }
+        if record_key and record_key != key:
+            seen_news.pop(record_key, None)
+
+        if status == "new":
+            new_news.append(classified)
+        elif status == "headline_change":
+            headline_changes.append(classified)
+
+    # Keep previously observed results in the CSV even after they fall out of
+    # the current RSS window, so the artifact is an inventory rather than a
+    # one-day alert list.
+    for key, raw_record in seen_news.items():
+        if key in current_keys:
+            continue
+        record = history_entry(raw_record)
+        if not record.get("last_title") or not record.get("last_link"):
+            continue
+        inventory_items.append({
+            "priority": record.get("priority", "low"),
+            "published": record.get("published", ""),
+            "source": record.get("source", ""),
+            "title": record["last_title"],
+            "link": record["last_link"],
+            "query": record.get("query", ""),
+            "issues": record.get("issues", []),
+            "recommended_action": record.get("recommended_action", recommended_action(record.get("priority", "low"))),
+            "contact_email": record.get("contact_email", ""),
+            "status": "historical",
+            "first_seen": record.get("first_seen", ""),
+            "last_seen": record.get("last_seen", ""),
+        })
 
     page_state = dict(state.get("pages", {}))
     changed_pages = []
@@ -435,26 +594,26 @@ def monitor(args):
     }
     Path(args.state).parent.mkdir(parents=True, exist_ok=True)
     Path(args.state).write_text(json.dumps(new_state, indent=2, ensure_ascii=False), encoding="utf-8")
-    contacts = load_contacts(args.contacts)
-    triage_items = [attach_contact(classify_news_item(item), contacts) for item in new_news]
-    write_report(args.report, baseline, triage_items, changed_pages, errors)
-    write_inventory(args.inventory, triage_items)
-    write_drafts(args.drafts, triage_items)
-    alert_count = len(new_news) + len(changed_pages)
+    write_report(args.report, baseline, new_news, changed_pages, errors, headline_changes)
+    write_inventory(args.inventory, inventory_items)
+    write_drafts(args.drafts, new_news + headline_changes)
+    alert_count = len(new_news) + len(headline_changes) + len(changed_pages)
     review_count = alert_count + len(new_errors)
+    action_items = new_news + headline_changes
     write_outputs(args.github_output, {
         "alert_count": alert_count,
         "review_count": review_count,
         "new_news_count": len(new_news),
+        "headline_change_count": len(headline_changes),
         "changed_page_count": len(changed_pages),
         "baseline": str(baseline).lower(),
         "error_count": len(errors),
         "new_error_count": len(new_errors),
-        "critical_count": sum(item["priority"] == "critical" for item in triage_items),
-        "high_priority_count": sum(item["priority"] in ("critical", "high") for item in triage_items),
+        "critical_count": sum(item["priority"] == "critical" for item in action_items),
+        "high_priority_count": sum(item["priority"] in ("critical", "high") for item in action_items),
     })
     print(
-        f"Reputation watch completed: {alert_count} change(s), "
+        f"Reputation watch completed: {alert_count} change(s), {len(headline_changes)} headline change(s), "
         f"{len(errors)} retrieval error(s), {len(new_errors)} newly observed error(s)."
     )
     return 0
