@@ -1,12 +1,18 @@
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from scripts.reputation_monitor import (
     DEFAULT_QUERIES,
     attach_contact,
     classify_news_item,
+    headlines_differ,
     is_relevant_news_item,
     load_watched_pages,
+    material_contexts,
+    monitor,
     page_snapshot,
     parse_news_rss,
 )
@@ -21,6 +27,7 @@ class ReputationMonitorTests(unittest.TestCase):
         self.assertIn("sentencing", joined)
         self.assertIn("prostitution", joined)
         self.assertIn("trafficking", joined)
+        self.assertIn("headline", joined)
 
     def test_parses_google_news_items(self):
         xml = """<rss><channel><item>
@@ -66,6 +73,67 @@ class ReputationMonitorTests(unittest.TestCase):
         self.assertEqual("A precise update", snapshot["description"])
         self.assertIn("Jon Villasurda Sr.", snapshot["contexts"][0])
         self.assertEqual(64, len(snapshot["fingerprint"]))
+
+    def test_material_contexts_drop_unrelated_navigation_text(self):
+        text = (
+            "Top stories Weather Sports. Jon Villasurda Sr. pleaded guilty to transporting a person for prostitution. "
+            "More like this Subscribe."
+        )
+        contexts = material_contexts(text)
+        self.assertEqual(2, len(contexts))
+        self.assertTrue(any("transporting a person for prostitution" in context for context in contexts))
+        self.assertTrue(all("Top stories" not in context for context in contexts))
+
+    def test_page_fingerprint_ignores_unrelated_dynamic_text(self):
+        template = """<html><head><title>Stable report</title></head><body>
+        <p>Updated {dynamic}.</p><p>Jon Villasurda Sr. pleaded guilty to transporting a person for prostitution.</p>
+        </body></html>"""
+        first = page_snapshot("Example", "https://example.com", "https://example.com", template.format(dynamic="one minute ago"))
+        second = page_snapshot("Example", "https://example.com", "https://example.com", template.format(dynamic="two minutes ago"))
+        self.assertEqual(first["fingerprint"], second["fingerprint"])
+
+    def test_headline_change_detection_normalizes_whitespace_and_case(self):
+        self.assertFalse(headlines_differ("Same headline", " same   headline "))
+        self.assertTrue(headlines_differ("Original headline", "Updated headline"))
+
+    def test_monitor_records_a_changed_headline_without_creating_a_new_story(self):
+        first_xml = """<rss><channel><item>
+          <title>Clinton Township man pleads guilty in human trafficking case</title>
+          <link>https://example.com/story</link>
+          <guid>stable-story</guid>
+          <pubDate>Fri, 31 Jul 2026 12:00:00 GMT</pubDate>
+          <source>Example News</source>
+        </item></channel></rss>"""
+        second_xml = first_xml.replace(
+            "Clinton Township man pleads guilty in human trafficking case",
+            "Clinton Township man pleads guilty to transporting a person for prostitution",
+        )
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            args = SimpleNamespace(
+                state=str(root / "state.json"),
+                report=str(root / "report.md"),
+                inventory=str(root / "inventory.csv"),
+                drafts=str(root / "drafts.md"),
+                watch_config=str(root / "watch.json"),
+                contacts=str(Path(__file__).resolve().parents[1] / "config" / "media-contacts.json"),
+                query=['"Jon Villasurda"'],
+                github_output=str(root / "outputs.txt"),
+                timeout=5,
+            )
+            with patch("scripts.reputation_monitor.fetch", return_value=("https://news.google.com", first_xml)), patch(
+                "scripts.reputation_monitor.load_watched_pages", return_value=[]
+            ):
+                self.assertEqual(0, monitor(args))
+            with patch("scripts.reputation_monitor.fetch", return_value=("https://news.google.com", second_xml)), patch(
+                "scripts.reputation_monitor.load_watched_pages", return_value=[]
+            ):
+                self.assertEqual(0, monitor(args))
+
+            outputs = (root / "outputs.txt").read_text(encoding="utf-8")
+            report = (root / "report.md").read_text(encoding="utf-8")
+            self.assertIn("headline_change_count=1", outputs)
+            self.assertIn("Previously observed headline", report)
 
     def test_missing_or_empty_watch_secret_means_no_watched_pages(self):
         with patch.dict("os.environ", {"REPUTATION_WATCH_URLS_JSON": ""}):
