@@ -1,3 +1,4 @@
+import json
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -227,7 +228,8 @@ class ReputationMonitorTests(unittest.TestCase):
             )
             secret = (
                 '[{"label":"Existing","url":"https://example.com/new"},'
-                '{"label":"Secret only","url":"https://example.com/secret"}]'
+                '{"label":"Secret only","url":"https://example.com/secret"},'
+                '{"label":"Duplicate alias","url":"https://example.com/committed/"}]'
             )
             with patch.dict("os.environ", {"REPUTATION_WATCH_URLS_JSON": secret}):
                 pages = load_watched_pages(str(config))
@@ -237,6 +239,35 @@ class ReputationMonitorTests(unittest.TestCase):
             self.assertEqual("https://example.com/new", by_label["Existing"])
             self.assertEqual("https://example.com/committed", by_label["Committed only"])
             self.assertEqual("https://example.com/secret", by_label["Secret only"])
+
+    def test_monitor_prunes_pages_removed_from_active_watch_inventory(self):
+        rss = "<rss><channel></channel></rss>"
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state.json"
+            state.write_text(
+                '{"updated_at":"2026-08-01T00:00:00Z","seen_news":{},"errors":[],"pages":'
+                '{"Obsolete":{"snapshot_version":2,"fingerprint":"old"}}}',
+                encoding="utf-8",
+            )
+            args = SimpleNamespace(
+                state=str(state),
+                report=str(root / "report.md"),
+                inventory=str(root / "inventory.csv"),
+                drafts=str(root / "drafts.md"),
+                watch_config=str(root / "watch.json"),
+                contacts=str(root / "contacts.json"),
+                query=['"Jon Villasurda"'],
+                github_output=str(root / "outputs.txt"),
+                timeout=5,
+            )
+            with patch("scripts.reputation_monitor.fetch", return_value=("https://news.google.com", rss)), patch(
+                "scripts.reputation_monitor.load_watched_pages", return_value=[]
+            ):
+                self.assertEqual(0, monitor(args))
+
+            saved = json.loads(state.read_text(encoding="utf-8"))
+            self.assertEqual({}, saved["pages"])
 
     def test_classifies_suffix_omission_as_high_priority(self):
         item = {

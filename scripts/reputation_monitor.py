@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import quote_plus, urlencode
+from urllib.parse import quote_plus, urlencode, urlsplit
 from urllib.request import Request, urlopen
 
 USER_AGENT = "jon-villasurda-reputation-watch/1.0"
@@ -593,7 +593,13 @@ def load_watched_pages(config_path=None):
             # The committed inventory is always retained. A secret entry with
             # the same label can update its URL without hiding other pages.
             merged[page["label"]] = page
-    return list(merged.values())
+    deduplicated = {}
+    for page in merged.values():
+        parts = urlsplit(page["url"].strip())
+        url_key = (parts.scheme.lower(), parts.netloc.lower(), parts.path.rstrip("/") or "/", parts.query)
+        if url_key not in deduplicated:
+            deduplicated[url_key] = page
+    return list(deduplicated.values())
 
 
 def history_entry(value):
@@ -734,13 +740,14 @@ def monitor(args):
         })
 
     stored_pages = state.get("pages", {})
-    page_state = dict(stored_pages) if isinstance(stored_pages, dict) else {}
+    previous_page_state = dict(stored_pages) if isinstance(stored_pages, dict) else {}
+    page_state = {}
     changed_pages = []
     for page in load_watched_pages(args.watch_config):
         try:
             final_url, html = fetch(page["url"], args.timeout)
             snapshot = page_snapshot(page["label"], page["url"], final_url, html)
-            previous = page_state.get(page["label"])
+            previous = previous_page_state.get(page["label"])
             if page_snapshot_changed(previous, snapshot):
                 changed_pages.append(attach_contact(classify_page_change(snapshot, previous), contacts))
             page_state[page["label"]] = snapshot
