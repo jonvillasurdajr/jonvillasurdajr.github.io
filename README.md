@@ -12,6 +12,7 @@ The Jekyll site presents a consistent professional profile, selected public work
 - IndexNow submissions generated from the live sitemap after GitHub Pages publishes the current commit
 - A daily technical SEO audit with automatic failure/recovery issues, including full-name, suffix, Mercer, Okemos, and corroborating-profile checks on the primary professional entity markup
 - A daily external-reputation monitor with a primary run and two staggered recovery opportunities that search identity, professional, plea, offense, and headline variants in Google News and watch known publication pages
+- A committed watched-page inventory that is always retained, with optional secret-supplied entries merged as additions or same-label URL updates rather than replacing coverage
 - Duplicate-safe recovery gating: later scheduled runs execute only when no earlier scheduled run has completed or remains active that day
 - A persistent assigned status issue confirming each completed scan and identifying whether it was a primary, recovery, or manual run
 - Historical CSV inventory, headline-change detection, stable article-body monitoring that excludes changing newsroom navigation, workflow summaries, and approval-gated correction-request drafts for new reputation findings or material watched-page changes; actionable issue entries link to prefilled Gmail drafts

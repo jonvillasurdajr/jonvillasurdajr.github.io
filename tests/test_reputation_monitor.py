@@ -217,6 +217,27 @@ class ReputationMonitorTests(unittest.TestCase):
         with patch.dict("os.environ", {"REPUTATION_WATCH_URLS_JSON": ""}):
             self.assertEqual([], load_watched_pages("missing-config.json"))
 
+    def test_secret_watch_entries_merge_with_committed_inventory(self):
+        with TemporaryDirectory() as directory:
+            config = Path(directory) / "watch.json"
+            config.write_text(
+                '[{"label":"Existing","url":"https://example.com/old"},'
+                '{"label":"Committed only","url":"https://example.com/committed"}]',
+                encoding="utf-8",
+            )
+            secret = (
+                '[{"label":"Existing","url":"https://example.com/new"},'
+                '{"label":"Secret only","url":"https://example.com/secret"}]'
+            )
+            with patch.dict("os.environ", {"REPUTATION_WATCH_URLS_JSON": secret}):
+                pages = load_watched_pages(str(config))
+
+            by_label = {page["label"]: page["url"] for page in pages}
+            self.assertEqual(3, len(pages))
+            self.assertEqual("https://example.com/new", by_label["Existing"])
+            self.assertEqual("https://example.com/committed", by_label["Committed only"])
+            self.assertEqual("https://example.com/secret", by_label["Secret only"])
+
     def test_classifies_suffix_omission_as_high_priority(self):
         item = {
             "title": "Jon Villasurda named in new report",

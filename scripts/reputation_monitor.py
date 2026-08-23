@@ -572,20 +572,28 @@ def write_outputs(path, values):
 
 
 def load_watched_pages(config_path=None):
-    raw = os.environ.get("REPUTATION_WATCH_URLS_JSON")
-    if not raw and config_path and Path(config_path).exists():
-        raw = Path(config_path).read_text(encoding="utf-8")
-    raw = raw or "[]"
-    try:
-        pages = json.loads(raw)
-    except json.JSONDecodeError as exc:
-        raise RuntimeError(f"REPUTATION_WATCH_URLS_JSON is invalid JSON: {exc}") from exc
-    if not isinstance(pages, list):
-        raise RuntimeError("REPUTATION_WATCH_URLS_JSON must be a JSON list")
-    for page in pages:
-        if not isinstance(page, dict) or not page.get("label") or not page.get("url"):
-            raise RuntimeError("Each watched page must contain label and url")
-    return pages
+    sources = []
+    if config_path and Path(config_path).exists():
+        sources.append((str(config_path), Path(config_path).read_text(encoding="utf-8")))
+    secret_raw = os.environ.get("REPUTATION_WATCH_URLS_JSON")
+    if secret_raw:
+        sources.append(("REPUTATION_WATCH_URLS_JSON", secret_raw))
+
+    merged = {}
+    for source, raw in sources:
+        try:
+            pages = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(f"{source} is invalid JSON: {exc}") from exc
+        if not isinstance(pages, list):
+            raise RuntimeError(f"{source} must be a JSON list")
+        for page in pages:
+            if not isinstance(page, dict) or not page.get("label") or not page.get("url"):
+                raise RuntimeError(f"Each watched page in {source} must contain label and url")
+            # The committed inventory is always retained. A secret entry with
+            # the same label can update its URL without hiding other pages.
+            merged[page["label"]] = page
+    return list(merged.values())
 
 
 def history_entry(value):
