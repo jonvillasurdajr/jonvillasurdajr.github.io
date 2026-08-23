@@ -1,15 +1,15 @@
 ---
 layout: default
 title: Official Links for Jon Villasurda Jr.
-seo_title: "Jon Villasurda Jr. | Official Professional Links"
+seo_title: "Jon G. Villasurda Jr. | Official Professional Links"
 permalink: /links/
-description: "Verified professional profiles, publications, media, and policy resources for Jon Villasurda Jr., MPH, Senior Principal at Mercer."
-last_modified_at: 2026-07-31
+description: "Verified professional profiles, publications, media, and policy resources for Jon G. Villasurda Jr., Senior Principal with Mercer Government in Okemos, Michigan."
+last_modified_at: 2026-08-23
 ---
 
 # Official Links for Jon Villasurda Jr.
 
-This is the professional links hub for Jon Villasurda Jr., MPH, also known professionally as Jon Villasurda.
+This is the professional links hub for Jon G. Villasurda Jr., MPH, also known professionally as Jon Villasurda Jr. and Jon Villasurda.
 
 Jon Villasurda Jr. is a Senior Principal at Mercer based in Okemos, Michigan. His public work focuses on Medicaid, behavioral health, Certified Community Behavioral Health Clinics, public sector strategy, analytics, finance, and program evaluation.
 

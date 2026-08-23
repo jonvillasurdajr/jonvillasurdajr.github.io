@@ -132,6 +132,14 @@ def page_audit(url, timeout, host):
             if person.get("additionalName") != "G.": failures.append(f"{url}: Person additionalName must be G.")
             if person.get("honorificSuffix") != "Jr.": failures.append(f"{url}: Person honorificSuffix must be Jr.")
             if person.get("identifier") != "jon-g-villasurda-jr": failures.append(f"{url}: Person identifier must be jon-g-villasurda-jr")
+            required_names={"Jon G. Villasurda Jr.","Jon G Villasurda Jr","Jon Villasurda Jr.","Jon Villasurda"}
+            missing_names=required_names-set(person.get("alternateName") or [])
+            if missing_names: failures.append(f"{url}: Person alternateName is missing identity variants: {', '.join(sorted(missing_names))}")
+            employer=person.get("worksFor")
+            if not isinstance(employer,dict) or employer.get("name") != "Mercer": failures.append(f"{url}: Person worksFor must identify Mercer")
+            location=person.get("workLocation")
+            address=location.get("address") if isinstance(location,dict) else None
+            if not isinstance(address,dict) or address.get("addressLocality") != "Okemos" or address.get("addressRegion") != "MI": failures.append(f"{url}: Person workLocation must identify Okemos, MI")
             if len(person.get("sameAs") or []) < 3: failures.append(f"{url}: Person sameAs must contain at least three corroborating profiles")
             elif "https://www.linkedin.com/in/jonvillasurdajr/" not in person["sameAs"]: failures.append(f"{url}: Person sameAs must contain the canonical LinkedIn profile")
             if not isinstance(person.get("image"),dict) or not person["image"].get("contentUrl"): failures.append(f"{url}: Person image must be an ImageObject with contentUrl")

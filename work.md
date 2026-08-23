@@ -1,15 +1,15 @@
 ---
 layout: default
 title: Work of Jon Villasurda Jr.
-seo_title: "Jon Villasurda Jr. | Healthcare Consulting Work"
+seo_title: "Jon G. Villasurda Jr. | Mercer Government Work"
 permalink: /work/
-description: "Explore Jon Villasurda Jr.'s healthcare consulting work in Medicaid policy, behavioral health system design, analytics, finance, and program evaluation."
-last_modified_at: 2026-07-23
+description: "Healthcare consulting work by Jon G. Villasurda Jr., Senior Principal with Mercer Government in Okemos, Michigan, in Medicaid, behavioral health, analytics, finance, and evaluation."
+last_modified_at: 2026-08-23
 ---
 
 # Work of Jon Villasurda Jr.
 
-Jon Villasurda Jr., MPH, works at the intersection of Medicaid policy, behavioral health system design, public-sector implementation, and evidence-informed management.
+Jon G. Villasurda Jr., MPH, works at the intersection of Medicaid policy, behavioral health system design, public-sector implementation, and evidence-informed management.
 
 ## Current work
 

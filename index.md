@@ -1,20 +1,27 @@
 ---
 layout: default
 title: Jon Villasurda Jr.
-seo_title: "Jon Villasurda Jr. | Okemos, Michigan"
-description: "Official site for Jon G. Villasurda Jr. of Okemos, Michigan, a health policy professional focused on Medicaid, behavioral health, CCBHCs, and public-sector strategy."
+seo_title: "Jon G. Villasurda Jr. | Mercer Government, Okemos MI"
+description: "Official professional site for Jon G. Villasurda Jr., a Senior Principal with Mercer Government in Okemos, Michigan, focused on Medicaid, behavioral health, and CCBHC implementation."
 schema_type: ProfilePage
 date_created: 2026-07-20
-last_modified_at: 2026-08-08
+last_modified_at: 2026-08-23
 ---
 
 # Jon G. Villasurda Jr., MPH
 
 <img class="profile-image" src="{{ site.author.image | relative_url | escape }}" alt="Portrait of Jon G. Villasurda Jr." width="180" height="180" fetchpriority="high" decoding="async" />
 
-**Medicaid, behavioral health, and public-sector health strategy**
+**Senior Principal, Mercer Government | Medicaid, behavioral health, and public-sector health strategy**
 
-Jon G. Villasurda Jr. is a health policy professional based in Okemos, Michigan, and a Senior Principal with Mercer Government. He is also listed professionally as Jon Villasurda and Jon Villasurda Jr. His work connects policy design with implementation, operations, payment, analytics, finance, and evaluation for publicly funded healthcare systems.
+Jon G. Villasurda Jr. is a health policy professional and Senior Principal with Mercer Government in Okemos, Michigan. Public professional references may use Jon G. Villasurda Jr., Jon Villasurda Jr., or Jon Villasurda. His work connects policy design with implementation, operations, payment, analytics, finance, and evaluation for publicly funded healthcare systems.
+
+## Professional identity
+
+- **Name:** Jon G. Villasurda Jr.
+- **Current role:** Senior Principal, Mercer Government
+- **Professional location:** Okemos, Michigan
+- **Focus:** Medicaid, behavioral health, CCBHC implementation, and public-sector health strategy
 
 - [Explore CCBHC work and resources](/ccbhc/)
 - [Read healthcare policy notes](/notes/)
