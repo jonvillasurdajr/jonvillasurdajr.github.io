@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import quote_plus, urlencode
+from urllib.parse import quote_plus, urlencode, urlsplit
 from urllib.request import Request, urlopen
 
 USER_AGENT = "jon-villasurda-reputation-watch/1.0"
@@ -41,6 +41,32 @@ PAGE_MATERIAL_TERMS = re.compile(
     r"\b(?:sentenc(?:e|ed|ing)|probation|prison)\b",
     re.I,
 )
+PAGE_CONTEXT_ANCHORS = re.compile(
+    r"\bvillasurda\b|transport(?:ing|ation)?|prostitution|"
+    r"(?:human|sex)[ -]?traffick(?:ing|ed)?|trafficking ring",
+    re.I,
+)
+SHARED_NAME_TERMS = re.compile(r"\bjon(?:\s+(?:g\.?|granger))?\s+villasurda\b", re.I)
+DISTINGUISHED_NAME_TERMS = re.compile(
+    r"\bjon(?:\s+(?:g\.?|granger))?\s+villasurda,?\s+(?:sr|jr)\.?\b|"
+    r"\bjon\s+granger\s+villasurda\b",
+    re.I,
+)
+SNAPSHOT_VERSION = 2
+SKIPPED_PAGE_CHROME = frozenset({
+    "aside", "button", "dialog", "footer", "form", "header", "iframe",
+    "nav", "noscript", "script", "style", "svg", "template",
+})
+BLOCK_TAGS = frozenset({
+    "article", "blockquote", "br", "dd", "div", "dl", "dt", "figcaption",
+    "figure", "h1", "h2", "h3", "h4", "h5", "h6", "li", "main", "p",
+    "section", "table", "td", "th", "tr",
+})
+PAGE_CHROME_HINTS = re.compile(
+    r"\b(?:advertisement|latest|newsletter|popular|recommended|related|share|social|trending|weather)\b",
+    re.I,
+)
+VOID_TAGS = frozenset({"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"})
 
 
 def fetch(url, timeout=30):
@@ -110,29 +136,64 @@ class RelevantPageParser(HTMLParser):
         self.text = []
         self.in_title = False
         self.skip_depth = 0
+        self.dynamic_skip_tag = ""
+        self.dynamic_skip_depth = 0
 
     def handle_starttag(self, tag, attrs):
+        tag = tag.lower()
         attributes = dict(attrs)
-        if tag in ("script", "style", "noscript", "svg"):
+        if self.dynamic_skip_tag:
+            if tag == self.dynamic_skip_tag:
+                self.dynamic_skip_depth += 1
+            return
+        if tag in SKIPPED_PAGE_CHROME:
             self.skip_depth += 1
-        elif tag == "title":
+            return
+        if self.skip_depth:
+            return
+        role = (attributes.get("role") or "").lower()
+        descriptor = " ".join(
+            attributes.get(name) or ""
+            for name in ("id", "class", "aria-label", "aria-roledescription", "data-testid")
+        )
+        if role in ("banner", "complementary", "contentinfo", "navigation") or PAGE_CHROME_HINTS.search(descriptor):
+            if tag not in VOID_TAGS:
+                self.dynamic_skip_tag = tag
+                self.dynamic_skip_depth = 1
+            return
+        if tag == "title":
             self.in_title = True
         elif tag == "meta":
             key = (attributes.get("name") or attributes.get("property") or "").lower()
             if key in ("description", "og:title", "og:description"):
                 self.meta[key] = (attributes.get("content") or "").strip()
+        elif tag in BLOCK_TAGS:
+            self.text.append("\n")
 
     def handle_endtag(self, tag):
-        if tag in ("script", "style", "noscript", "svg") and self.skip_depth:
+        tag = tag.lower()
+        if self.dynamic_skip_tag:
+            if tag == self.dynamic_skip_tag:
+                self.dynamic_skip_depth -= 1
+                if not self.dynamic_skip_depth:
+                    self.dynamic_skip_tag = ""
+            return
+        if tag in SKIPPED_PAGE_CHROME and self.skip_depth:
             self.skip_depth -= 1
-        elif tag == "title":
+            return
+        if self.skip_depth:
+            return
+        if tag == "title":
             self.in_title = False
+        elif tag in BLOCK_TAGS:
+            self.text.append("\n")
 
     def handle_data(self, data):
-        if self.skip_depth:
+        if self.skip_depth or self.dynamic_skip_tag:
             return
         if self.in_title:
             self.title.append(data)
+            return
         self.text.append(data)
 
 
@@ -157,13 +218,28 @@ def relevant_context(text, term="villasurda", radius=280):
 
 def material_contexts(text, radius=360, limit=20):
     """Keep stable legal/identity sentences and drop navigation boilerplate."""
-    sentences = [normalized(sentence) for sentence in re.split(r"(?<=[.!?])\s+", text)]
+    sentences = [normalized(sentence) for sentence in re.split(r"\n+|(?<=[.!?])\s+", text)]
     contexts = []
     for sentence in sentences:
-        if not sentence or not PAGE_MATERIAL_TERMS.search(sentence):
+        if not sentence or not PAGE_CONTEXT_ANCHORS.search(sentence):
             continue
-        if sentence not in contexts:
-            contexts.append(sentence)
+        excerpts = [sentence]
+        if len(sentence) > (radius * 2) + 80:
+            excerpts = []
+            for match in PAGE_MATERIAL_TERMS.finditer(sentence):
+                start = max(0, match.start() - radius)
+                end = min(len(sentence), match.end() + radius)
+                excerpt = normalized(sentence[start:end])
+                if start:
+                    excerpt = f"…{excerpt}"
+                if end < len(sentence):
+                    excerpt = f"{excerpt}…"
+                excerpts.append(excerpt)
+        for excerpt in excerpts:
+            if excerpt and excerpt not in contexts:
+                contexts.append(excerpt)
+            if len(contexts) >= limit:
+                return contexts
     if contexts:
         return contexts[:limit]
     return relevant_context(text, radius=radius)[:limit]
@@ -173,8 +249,9 @@ def page_snapshot(label, requested_url, final_url, html):
     parser = RelevantPageParser()
     parser.feed(html)
     parser.close()
-    visible_text = normalized(" ".join(parser.text))
+    visible_text = "".join(parser.text)
     snapshot = {
+        "snapshot_version": SNAPSHOT_VERSION,
         "label": label,
         "requested_url": requested_url,
         "final_url": final_url,
@@ -195,34 +272,37 @@ def read_json(path, default):
         return default
 
 
-def classify_news_item(item):
-    """Assign a review priority without asserting that publication text is false."""
-    title = item.get("title", "")
-    lowered = title.lower()
+def review_signals(text):
+    """Return neutral review signals without asserting that publication text is false."""
     issues = []
     priority = "low"
 
-    if "jon villasurda" in lowered and not any(
-        variant in lowered for variant in ("jon villasurda sr", "jon villasurda jr", "jon granger villasurda")
-    ):
+    if SHARED_NAME_TERMS.search(text) and not DISTINGUISHED_NAME_TERMS.search(text):
         issues.append("Shared-name ambiguity: the result omits a generational suffix.")
         priority = "high"
 
-    if "federal charge" in lowered:
+    if re.search(r"\bfederal charges?\b", text, re.I):
         issues.append("Jurisdiction check: verify any reference to federal charges against the state-court record.")
         priority = "critical"
 
-    if PLEA_TERMS.search(title) and TRAFFICKING_TERMS.search(title):
-        if OFFENSE_TERMS.search(title):
+    if PLEA_TERMS.search(text) and TRAFFICKING_TERMS.search(text):
+        if OFFENSE_TERMS.search(text):
             issues.append("Framing check: the specific prostitution-transportation count and broader trafficking context appear together.")
             priority = max_priority(priority, "medium")
         else:
             issues.append("Plea-characterization check: the headline mentions trafficking without naming the offense of conviction.")
             priority = max_priority(priority, "high")
 
-    if re.search(r"\b(sentenced|sentence|probation|prison)\b", title, re.I):
+    if re.search(r"\b(sentenced|sentence|probation|prison)\b", text, re.I):
         issues.append("Disposition check: confirm the reported sentence against the final court order.")
         priority = max_priority(priority, "high")
+
+    return issues, priority
+
+
+def classify_news_item(item):
+    """Assign a review priority without asserting that publication text is false."""
+    issues, priority = review_signals(item.get("title", ""))
 
     if not issues:
         issues.append("New exact-name result; review for identity accuracy and relevance.")
@@ -233,6 +313,56 @@ def classify_news_item(item):
         "issues": issues,
         "recommended_action": recommended_action(priority),
     }
+
+
+def classify_page_change(snapshot, previous=None):
+    """Convert a material watched-page change into an approval-gated review item."""
+    headings = normalized(" ".join(filter(None, (
+        snapshot.get("title", ""), snapshot.get("og_title", ""),
+    ))))
+    full_text = normalized(" ".join(filter(None, (
+        headings,
+        snapshot.get("description", ""),
+        snapshot.get("og_description", ""),
+        *snapshot.get("contexts", []),
+    ))))
+    heading_issues, heading_priority = review_signals(headings)
+    full_issues, full_priority = review_signals(full_text)
+    issues = list(heading_issues)
+    issues.extend(issue for issue in full_issues if issue not in issues)
+    priority = max_priority(heading_priority, full_priority)
+    if not issues:
+        issues.append("Material legal or identity language changed on a watched publication page; review the before-and-after evidence.")
+
+    item = {
+        **snapshot,
+        "title": snapshot.get("title") or snapshot.get("og_title") or snapshot["label"],
+        "link": snapshot["final_url"],
+        "source": snapshot["label"],
+        "published": "",
+        "query": "watched page",
+        "status": "watched_page_change",
+        "priority": priority,
+        "issues": issues,
+        "recommended_action": recommended_action(priority),
+    }
+    if isinstance(previous, dict):
+        fields = ("final_url", "title", "description", "og_title", "og_description", "contexts")
+        item["changed_fields"] = [field for field in fields if previous.get(field) != snapshot.get(field)]
+        item["previous_contexts"] = previous.get("contexts", [])
+    else:
+        item["changed_fields"] = []
+        item["previous_contexts"] = []
+    return item
+
+
+def page_snapshot_changed(previous, current):
+    """Ignore legacy snapshots once while comparing only matching parser versions."""
+    return bool(
+        isinstance(previous, dict)
+        and previous.get("snapshot_version") == SNAPSHOT_VERSION
+        and previous.get("fingerprint") != current.get("fingerprint")
+    )
 
 
 def recommended_action(priority):
@@ -335,7 +465,7 @@ def write_drafts(path, triage_items):
     lines = [
         "# Approval-gated correction request drafts",
         "",
-        "These drafts are generated for review only. No message has been sent. New results and changed headlines are included when they need review.",
+        "These drafts are generated for review only. No message has been sent. New results, changed headlines, and material watched-page changes are included when they need review.",
         "",
     ]
     actionable = [item for item in triage_items if item["priority"] in ("critical", "high", "medium")]
@@ -403,16 +533,27 @@ def write_report(path, baseline, triage_items, changed_pages, errors, headline_c
             lines.extend([
                 f"### {page['label']}",
                 "",
+                f"- Priority: **{page['priority']}**",
+                f"- Review issue: {' '.join(page['issues'])}",
+                f"- Recommended action: {page['recommended_action']}",
+                f"- Changed evidence fields: {', '.join(page.get('changed_fields', [])) or 'not available'}",
                 f"- URL: {page['final_url']}",
                 f"- Title: {page['title']}",
                 f"- Description: {page['description']}",
                 f"- Open Graph title: {page['og_title']}",
                 f"- Open Graph description: {page['og_description']}",
+                f"- [Open prefilled Gmail draft]({page['gmail_draft_url']})" if page.get("gmail_draft_url") and page["priority"] != "low" else "- No outreach draft recommended for this change." if page["priority"] == "low" else "- Verified recipient still needed before outreach.",
                 "",
                 "Relevant on-page excerpts:",
                 "",
             ])
-            lines.extend(f"- {excerpt}" for excerpt in page["contexts"])
+            if page["contexts"]:
+                lines.extend(f"- {excerpt}" for excerpt in page["contexts"])
+            else:
+                lines.append("- No material excerpt was retained; review the metadata fields above.")
+            if "contexts" in page.get("changed_fields", []) and page.get("previous_contexts"):
+                lines.extend(["", "Previously retained excerpts:", ""])
+                lines.extend(f"- {excerpt}" for excerpt in page["previous_contexts"])
             lines.append("")
     if errors:
         lines.extend(["## Retrieval errors", ""])
@@ -431,20 +572,34 @@ def write_outputs(path, values):
 
 
 def load_watched_pages(config_path=None):
-    raw = os.environ.get("REPUTATION_WATCH_URLS_JSON")
-    if not raw and config_path and Path(config_path).exists():
-        raw = Path(config_path).read_text(encoding="utf-8")
-    raw = raw or "[]"
-    try:
-        pages = json.loads(raw)
-    except json.JSONDecodeError as exc:
-        raise RuntimeError(f"REPUTATION_WATCH_URLS_JSON is invalid JSON: {exc}") from exc
-    if not isinstance(pages, list):
-        raise RuntimeError("REPUTATION_WATCH_URLS_JSON must be a JSON list")
-    for page in pages:
-        if not isinstance(page, dict) or not page.get("label") or not page.get("url"):
-            raise RuntimeError("Each watched page must contain label and url")
-    return pages
+    sources = []
+    if config_path and Path(config_path).exists():
+        sources.append((str(config_path), Path(config_path).read_text(encoding="utf-8")))
+    secret_raw = os.environ.get("REPUTATION_WATCH_URLS_JSON")
+    if secret_raw:
+        sources.append(("REPUTATION_WATCH_URLS_JSON", secret_raw))
+
+    merged = {}
+    for source, raw in sources:
+        try:
+            pages = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(f"{source} is invalid JSON: {exc}") from exc
+        if not isinstance(pages, list):
+            raise RuntimeError(f"{source} must be a JSON list")
+        for page in pages:
+            if not isinstance(page, dict) or not page.get("label") or not page.get("url"):
+                raise RuntimeError(f"Each watched page in {source} must contain label and url")
+            # The committed inventory is always retained. A secret entry with
+            # the same label can update its URL without hiding other pages.
+            merged[page["label"]] = page
+    deduplicated = {}
+    for page in merged.values():
+        parts = urlsplit(page["url"].strip())
+        url_key = (parts.scheme.lower(), parts.netloc.lower(), parts.path.rstrip("/") or "/", parts.query)
+        if url_key not in deduplicated:
+            deduplicated[url_key] = page
+    return list(deduplicated.values())
 
 
 def history_entry(value):
@@ -464,8 +619,22 @@ def headlines_differ(previous_title, current_title):
 
 
 def monitor(args):
-    state = read_json(args.state, {"seen_news": {}, "pages": {}, "errors": []})
-    baseline = not Path(args.state).exists()
+    empty_state = {"seen_news": {}, "pages": {}, "errors": []}
+    state_path_exists = Path(args.state).exists()
+    state = read_json(args.state, empty_state)
+    state_valid = bool(
+        isinstance(state, dict)
+        and isinstance(state.get("seen_news", {}), dict)
+        and isinstance(state.get("pages", {}), dict)
+        and isinstance(state.get("errors", []), list)
+    )
+    if not state_valid:
+        state = dict(empty_state)
+    baseline = bool(
+        not state_path_exists
+        or not state_valid
+        or ("updated_at" not in state and not state.get("seen_news") and not state.get("pages"))
+    )
     errors = []
     current_news = []
     contacts = load_contacts(args.contacts)
@@ -570,20 +739,23 @@ def monitor(args):
             "last_seen": record.get("last_seen", ""),
         })
 
-    page_state = dict(state.get("pages", {}))
+    stored_pages = state.get("pages", {})
+    previous_page_state = dict(stored_pages) if isinstance(stored_pages, dict) else {}
+    page_state = {}
     changed_pages = []
     for page in load_watched_pages(args.watch_config):
         try:
             final_url, html = fetch(page["url"], args.timeout)
             snapshot = page_snapshot(page["label"], page["url"], final_url, html)
-            previous = page_state.get(page["label"])
-            if previous and previous.get("fingerprint") != snapshot["fingerprint"]:
-                changed_pages.append(snapshot)
+            previous = previous_page_state.get(page["label"])
+            if page_snapshot_changed(previous, snapshot):
+                changed_pages.append(attach_contact(classify_page_change(snapshot, previous), contacts))
             page_state[page["label"]] = snapshot
         except OSError as exc:
             errors.append(f"Watched page {page['label']!r}: {exc}")
 
-    previous_errors = set(state.get("errors", []))
+    stored_errors = state.get("errors", [])
+    previous_errors = set(stored_errors) if isinstance(stored_errors, list) else set()
     new_errors = [error for error in errors if error not in previous_errors]
 
     new_state = {
@@ -595,11 +767,12 @@ def monitor(args):
     Path(args.state).parent.mkdir(parents=True, exist_ok=True)
     Path(args.state).write_text(json.dumps(new_state, indent=2, ensure_ascii=False), encoding="utf-8")
     write_report(args.report, baseline, new_news, changed_pages, errors, headline_changes)
-    write_inventory(args.inventory, inventory_items)
-    write_drafts(args.drafts, new_news + headline_changes)
+    write_inventory(args.inventory, inventory_items + changed_pages)
+    action_items = new_news + headline_changes + changed_pages
+    write_drafts(args.drafts, action_items)
     alert_count = len(new_news) + len(headline_changes) + len(changed_pages)
     review_count = alert_count + len(new_errors)
-    action_items = new_news + headline_changes
+    actionable_draft_count = sum(item["priority"] in ("critical", "high", "medium") for item in action_items)
     write_outputs(args.github_output, {
         "alert_count": alert_count,
         "review_count": review_count,
@@ -611,6 +784,7 @@ def monitor(args):
         "new_error_count": len(new_errors),
         "critical_count": sum(item["priority"] == "critical" for item in action_items),
         "high_priority_count": sum(item["priority"] in ("critical", "high") for item in action_items),
+        "actionable_draft_count": actionable_draft_count,
     })
     print(
         f"Reputation watch completed: {alert_count} change(s), {len(headline_changes)} headline change(s), "

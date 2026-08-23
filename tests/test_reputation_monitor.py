@@ -1,3 +1,4 @@
+import json
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -7,6 +8,7 @@ from unittest.mock import patch
 from scripts.reputation_monitor import (
     DEFAULT_QUERIES,
     attach_contact,
+    classify_page_change,
     classify_news_item,
     headlines_differ,
     is_relevant_news_item,
@@ -14,6 +16,7 @@ from scripts.reputation_monitor import (
     material_contexts,
     monitor,
     page_snapshot,
+    page_snapshot_changed,
     parse_news_rss,
 )
 
@@ -92,6 +95,48 @@ class ReputationMonitorTests(unittest.TestCase):
         second = page_snapshot("Example", "https://example.com", "https://example.com", template.format(dynamic="two minutes ago"))
         self.assertEqual(first["fingerprint"], second["fingerprint"])
 
+    def test_page_fingerprint_ignores_dynamic_page_chrome_with_material_terms(self):
+        template = """<html><head><title>Stable report</title></head><body>
+        <div role="region" aria-label="Trending stories carousel">
+          Jon Villasurda coverage updated {dynamic}.
+          <div>Unrelated defendant pleaded guilty and learns sentence.</div>
+        </div>
+        <article><p>Jon Villasurda Sr. pleaded guilty to transporting a person for prostitution.</p></article>
+        <footer>More stories</footer></body></html>"""
+        first = page_snapshot("Example", "https://example.com", "https://example.com", template.format(dynamic="one minute ago"))
+        second = page_snapshot("Example", "https://example.com", "https://example.com", template.format(dynamic="two minutes ago"))
+        self.assertEqual(first["fingerprint"], second["fingerprint"])
+        self.assertTrue(all("Trending" not in context for context in first["contexts"]))
+
+    def test_material_contexts_drop_generic_unrelated_crime_teaser(self):
+        contexts = material_contexts(
+            "Detroit rapper learns sentence for felony drug charge. "
+            "Jon Villasurda Sr. pleaded guilty to transporting a person for prostitution."
+        )
+        self.assertTrue(all("Detroit rapper" not in context for context in contexts))
+
+    def test_page_fingerprint_detects_material_article_change(self):
+        first = page_snapshot(
+            "Example",
+            "https://example.com",
+            "https://example.com",
+            "<article><p>Jon Villasurda Sr. pleaded guilty to transporting a person for prostitution.</p></article>",
+        )
+        second = page_snapshot(
+            "Example",
+            "https://example.com",
+            "https://example.com",
+            "<article><p>Jon Villasurda Sr. was sentenced to probation after the plea.</p></article>",
+        )
+        self.assertNotEqual(first["fingerprint"], second["fingerprint"])
+
+    def test_legacy_page_snapshot_is_migrated_without_false_alert(self):
+        current = page_snapshot("Example", "https://example.com", "https://example.com", "<p>Jon Villasurda Sr.</p>")
+        legacy = {"fingerprint": "old-parser-value"}
+        current_version = {"snapshot_version": current["snapshot_version"], "fingerprint": "different"}
+        self.assertFalse(page_snapshot_changed(legacy, current))
+        self.assertTrue(page_snapshot_changed(current_version, current))
+
     def test_headline_change_detection_normalizes_whitespace_and_case(self):
         self.assertFalse(headlines_differ("Same headline", " same   headline "))
         self.assertTrue(headlines_differ("Original headline", "Updated headline"))
@@ -135,9 +180,94 @@ class ReputationMonitorTests(unittest.TestCase):
             self.assertIn("headline_change_count=1", outputs)
             self.assertIn("Previously observed headline", report)
 
+    def test_corrupt_state_rebaselines_without_false_new_result(self):
+        xml = """<rss><channel><item>
+          <title>Jon Villasurda named in a new report</title>
+          <link>https://example.com/story</link>
+          <guid>stable-story</guid>
+          <pubDate>Fri, 31 Jul 2026 12:00:00 GMT</pubDate>
+          <source>Example News</source>
+        </item></channel></rss>"""
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state.json"
+            state.write_text("{not valid json", encoding="utf-8")
+            args = SimpleNamespace(
+                state=str(state),
+                report=str(root / "report.md"),
+                inventory=str(root / "inventory.csv"),
+                drafts=str(root / "drafts.md"),
+                watch_config=str(root / "watch.json"),
+                contacts=str(root / "contacts.json"),
+                query=['"Jon Villasurda"'],
+                github_output=str(root / "outputs.txt"),
+                timeout=5,
+            )
+            with patch("scripts.reputation_monitor.fetch", return_value=("https://news.google.com", xml)), patch(
+                "scripts.reputation_monitor.load_watched_pages", return_value=[]
+            ):
+                self.assertEqual(0, monitor(args))
+
+            outputs = (root / "outputs.txt").read_text(encoding="utf-8")
+            report = (root / "report.md").read_text(encoding="utf-8")
+            self.assertIn("baseline=true", outputs)
+            self.assertIn("new_news_count=0", outputs)
+            self.assertIn("Initial baseline established", report)
+
     def test_missing_or_empty_watch_secret_means_no_watched_pages(self):
         with patch.dict("os.environ", {"REPUTATION_WATCH_URLS_JSON": ""}):
             self.assertEqual([], load_watched_pages("missing-config.json"))
+
+    def test_secret_watch_entries_merge_with_committed_inventory(self):
+        with TemporaryDirectory() as directory:
+            config = Path(directory) / "watch.json"
+            config.write_text(
+                '[{"label":"Existing","url":"https://example.com/old"},'
+                '{"label":"Committed only","url":"https://example.com/committed"}]',
+                encoding="utf-8",
+            )
+            secret = (
+                '[{"label":"Existing","url":"https://example.com/new"},'
+                '{"label":"Secret only","url":"https://example.com/secret"},'
+                '{"label":"Duplicate alias","url":"https://example.com/committed/"}]'
+            )
+            with patch.dict("os.environ", {"REPUTATION_WATCH_URLS_JSON": secret}):
+                pages = load_watched_pages(str(config))
+
+            by_label = {page["label"]: page["url"] for page in pages}
+            self.assertEqual(3, len(pages))
+            self.assertEqual("https://example.com/new", by_label["Existing"])
+            self.assertEqual("https://example.com/committed", by_label["Committed only"])
+            self.assertEqual("https://example.com/secret", by_label["Secret only"])
+
+    def test_monitor_prunes_pages_removed_from_active_watch_inventory(self):
+        rss = "<rss><channel></channel></rss>"
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            state = root / "state.json"
+            state.write_text(
+                '{"updated_at":"2026-08-01T00:00:00Z","seen_news":{},"errors":[],"pages":'
+                '{"Obsolete":{"snapshot_version":2,"fingerprint":"old"}}}',
+                encoding="utf-8",
+            )
+            args = SimpleNamespace(
+                state=str(state),
+                report=str(root / "report.md"),
+                inventory=str(root / "inventory.csv"),
+                drafts=str(root / "drafts.md"),
+                watch_config=str(root / "watch.json"),
+                contacts=str(root / "contacts.json"),
+                query=['"Jon Villasurda"'],
+                github_output=str(root / "outputs.txt"),
+                timeout=5,
+            )
+            with patch("scripts.reputation_monitor.fetch", return_value=("https://news.google.com", rss)), patch(
+                "scripts.reputation_monitor.load_watched_pages", return_value=[]
+            ):
+                self.assertEqual(0, monitor(args))
+
+            saved = json.loads(state.read_text(encoding="utf-8"))
+            self.assertEqual({}, saved["pages"])
 
     def test_classifies_suffix_omission_as_high_priority(self):
         item = {
@@ -163,6 +293,65 @@ class ReputationMonitorTests(unittest.TestCase):
         self.assertEqual("high", classified["priority"])
         self.assertIn("plea-characterization", classified["issues"][0].lower())
 
+    def test_classifies_watched_page_headline_separately_from_precise_body(self):
+        snapshot = page_snapshot(
+            "WDIV July 2026 plea article",
+            "https://example.com/story",
+            "https://example.com/story",
+            """<html><head><title>Man pleads guilty in connection with human trafficking ring</title></head>
+            <body><article><p>Jon Villasurda Sr. pleaded guilty to transporting a person for prostitution.</p></article></body></html>""",
+        )
+        classified = classify_page_change(snapshot)
+        self.assertEqual("high", classified["priority"])
+        self.assertTrue(any("plea-characterization" in issue.lower() for issue in classified["issues"]))
+
+    def test_changed_watched_page_generates_approval_gated_draft(self):
+        rss = "<rss><channel></channel></rss>"
+        page_html = [
+            """<html><head><title>Man pleads guilty in human trafficking ring</title></head>
+            <body><article><p>Jon Villasurda Sr. pleaded guilty to transporting a person for prostitution.</p></article></body></html>"""
+        ]
+
+        def fake_fetch(url, timeout):
+            if "news.google.com" in url:
+                return url, rss
+            return url, page_html[0]
+
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            args = SimpleNamespace(
+                state=str(root / "state.json"),
+                report=str(root / "report.md"),
+                inventory=str(root / "inventory.csv"),
+                drafts=str(root / "drafts.md"),
+                watch_config=str(root / "watch.json"),
+                contacts=str(Path(__file__).resolve().parents[1] / "config" / "media-contacts.json"),
+                query=['"Jon Villasurda"'],
+                github_output=str(root / "outputs.txt"),
+                timeout=5,
+            )
+            watched = [{"label": "WDIV July 2026 plea article", "url": "https://example.com/story"}]
+            with patch("scripts.reputation_monitor.fetch", side_effect=fake_fetch), patch(
+                "scripts.reputation_monitor.load_watched_pages", return_value=watched
+            ):
+                self.assertEqual(0, monitor(args))
+                page_html[0] = page_html[0].replace(
+                    "transporting a person for prostitution",
+                    "transporting a person for prostitution, according to the court disposition",
+                )
+                self.assertEqual(0, monitor(args))
+
+            outputs = (root / "outputs.txt").read_text(encoding="utf-8")
+            report = (root / "report.md").read_text(encoding="utf-8")
+            drafts = (root / "drafts.md").read_text(encoding="utf-8")
+            self.assertIn("changed_page_count=1", outputs)
+            self.assertIn("actionable_draft_count=1", outputs)
+            self.assertIn("Changed evidence fields: contexts", report)
+            self.assertIn("Open prefilled Gmail draft", report)
+            self.assertIn("WDIV July 2026 plea article", drafts)
+            self.assertIn("No message has been sent", drafts)
+            self.assertIn("watched_page_change", (root / "inventory.csv").read_text(encoding="utf-8"))
+
     def test_verified_contact_creates_prefilled_gmail_link(self):
         item = {
             "title": "Example",
@@ -173,6 +362,17 @@ class ReputationMonitorTests(unittest.TestCase):
         self.assertEqual("news@example.com", enriched["contact_email"])
         self.assertIn("mail.google.com/mail/", enriched["gmail_draft_url"])
         self.assertIn("news%40example.com", enriched["gmail_draft_url"])
+
+    def test_workflow_preserves_state_and_allows_heartbeat_deployment(self):
+        root = Path(__file__).resolve().parents[1]
+        reputation_workflow = (root / ".github" / "workflows" / "reputation-watch.yml").read_text(encoding="utf-8")
+        monthly_workflow = (root / ".github" / "workflows" / "monthly-review.yml").read_text(encoding="utf-8")
+        self.assertIn("Recover state from the latest retained artifact", reputation_workflow)
+        self.assertIn(".cache/reputation-watch.json", reputation_workflow)
+        self.assertIn("ACTIONABLE_DRAFT_COUNT", reputation_workflow)
+        self.assertIn("actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0", reputation_workflow)
+        self.assertIn("actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1", reputation_workflow)
+        self.assertNotIn("Maintain scheduled SEO workflows [skip ci]", monthly_workflow)
 
 
 if __name__ == "__main__":
