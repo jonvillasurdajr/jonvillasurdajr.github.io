@@ -61,6 +61,41 @@ jobs:
           key: reputation-watch-${{ github.run_id }}
           restore-keys: |
             reputation-watch-
+      - name: Recover state from the latest retained artifact
+        if: steps.gate.outputs.should_run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if [ -s .cache/reputation-watch.json ]; then
+            echo "Monitoring state restored from the Actions cache."
+            exit 0
+          fi
+
+          mkdir -p .cache
+          recovery_dir="$(mktemp -d)"
+          trap 'rm -rf "$recovery_dir"' EXIT
+          mapfile -t artifact_ids < <(gh api "repos/${{ github.repository }}/actions/artifacts?per_page=100" \
+            --jq '.artifacts | map(select(.expired == false and (.name | startswith("reputation-watch-")))) | sort_by(.created_at) | reverse | .[0:20] | .[].id')
+
+          for artifact_id in "${artifact_ids[@]}"; do
+            rm -rf "$recovery_dir/extracted"
+            mkdir -p "$recovery_dir/extracted"
+            if ! gh api "repos/${{ github.repository }}/actions/artifacts/${artifact_id}/zip" > "$recovery_dir/artifact.zip"; then
+              continue
+            fi
+            if ! unzip -q "$recovery_dir/artifact.zip" -d "$recovery_dir/extracted"; then
+              continue
+            fi
+            state_file="$(find "$recovery_dir/extracted" -type f -name reputation-watch.json -print -quit)"
+            if [ -n "$state_file" ] && [ -s "$state_file" ]; then
+              cp "$state_file" .cache/reputation-watch.json
+              echo "Monitoring state recovered from retained artifact ${artifact_id}."
+              exit 0
+            fi
+          done
+
+          echo "No retained artifact contained monitoring state; this run will establish a baseline."
       - name: Check exact-name news and watched pages
         if: steps.gate.outputs.should_run == 'true'
         id: watch
@@ -73,6 +108,7 @@ jobs:
         with:
           name: reputation-watch-${{ github.run_id }}
           path: |
+            .cache/reputation-watch.json
             .cache/reputation-watch-report.md
             .cache/reputation-watch-inventory.csv
             .cache/reputation-watch-drafts.md
@@ -89,11 +125,12 @@ jobs:
           ERROR_COUNT: ${{ steps.watch.outputs.error_count }}
           NEW_ERROR_COUNT: ${{ steps.watch.outputs.new_error_count }}
           HIGH_PRIORITY_COUNT: ${{ steps.watch.outputs.high_priority_count }}
+          ACTIONABLE_DRAFT_COUNT: ${{ steps.watch.outputs.actionable_draft_count }}
         run: |
           title="External monitoring review needed"
           run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           report="$(sed -n '1,180p' .cache/reputation-watch-report.md)"
-          body="$(printf '%s\n\n%s\n\n%s' "The external monitor detected ${ALERT_COUNT} change(s): ${NEW_NEWS_COUNT} new news result(s), ${HEADLINE_CHANGE_COUNT} changed headline(s), ${CHANGED_PAGE_COUNT} watched-page change(s), and ${HIGH_PRIORITY_COUNT} high-priority review item(s). It encountered ${ERROR_COUNT} retrieval error(s), of which ${NEW_ERROR_COUNT} are new. Repeated identical retrieval errors do not create daily notifications. No email or external message was sent automatically." "$report" "The CSV inventory, full evidence report, and approval-gated correction drafts are attached to the workflow run: ${run_url}")"
+          body="$(printf '%s\n\n%s\n\n%s' "The external monitor detected ${ALERT_COUNT} change(s): ${NEW_NEWS_COUNT} new news result(s), ${HEADLINE_CHANGE_COUNT} changed headline(s), ${CHANGED_PAGE_COUNT} watched-page change(s), ${HIGH_PRIORITY_COUNT} high-priority review item(s), and ${ACTIONABLE_DRAFT_COUNT} approval-gated outreach draft(s). It encountered ${ERROR_COUNT} retrieval error(s), of which ${NEW_ERROR_COUNT} are new. Repeated identical retrieval errors do not create daily notifications. No email or external message was sent automatically." "$report" "The CSV inventory, full evidence report, state snapshot, and approval-gated correction drafts are attached to the workflow run: ${run_url}")"
           issue="$(gh issue list --repo "${{ github.repository }}" --state open --search "$title in:title" --json number,title --jq '.[] | select(.title == "External monitoring review needed") | .number' | head -n 1)"
           if [ -n "$issue" ]; then
             gh issue edit "$issue" --repo "${{ github.repository }}" --add-assignee "${{ github.repository_owner }}"
@@ -111,15 +148,18 @@ jobs:
           HEADLINE_CHANGE_COUNT: ${{ steps.watch.outputs.headline_change_count }}
           CHANGED_PAGE_COUNT: ${{ steps.watch.outputs.changed_page_count }}
           ERROR_COUNT: ${{ steps.watch.outputs.error_count }}
+          ACTIONABLE_DRAFT_COUNT: ${{ steps.watch.outputs.actionable_draft_count }}
         run: |
           title="Daily reputation monitor status"
           run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           local_date="$(TZ=America/New_York date +%Y-%m-%d)"
           draft_note="No new action-gated outreach draft requires review."
-          if [ "$ALERT_COUNT" -gt 0 ]; then
+          if [ "$ACTIONABLE_DRAFT_COUNT" -gt 0 ]; then
             review_title="External monitoring review needed"
             review_issue="$(gh issue list --repo "${{ github.repository }}" --state open --search "$review_title in:title" --json number,title,url --jq '.[] | select(.title == "External monitoring review needed") | .url' | head -n 1)"
             draft_note="Review findings and any prefilled Gmail drafts: ${review_issue}. The complete editable draft file is in the reputation-watch-${{ github.run_id }} artifact."
+          elif [ "$ALERT_COUNT" -gt 0 ]; then
+            draft_note="Changes were logged for review, but no outreach draft is currently recommended."
           fi
           body="Monitoring completed for ${local_date}. Mode: ${RUN_MODE}. Results: ${NEW_NEWS_COUNT} new news result(s), ${HEADLINE_CHANGE_COUNT} changed headline(s), ${CHANGED_PAGE_COUNT} watched-page change(s), ${ALERT_COUNT} total change(s), and ${ERROR_COUNT} retrieval error(s). ${draft_note} This workflow updates GitHub issues and artifacts; it does not send Gmail automatically. Evidence and workflow summary: ${run_url}"
           issue="$(gh issue list --repo "${{ github.repository }}" --state open --search "$title in:title" --json number,title --jq '.[] | select(.title == "Daily reputation monitor status") | .number' | head -n 1)"
