@@ -19,6 +19,7 @@ from urllib.request import Request, urlopen
 USER_AGENT = "jon-villasurda-reputation-watch/1.0"
 DEFAULT_QUERIES = (
     '"Jon Villasurda"',
+    '"Jon G. Villasurda"',
     '"Jon G. Villasurda Jr."',
     '"Jon Villasurda Jr"',
     '"Jon Villasurda Sr"',
@@ -30,9 +31,13 @@ DEFAULT_QUERIES = (
     '"Jon Villasurda" (headline OR article OR news OR publication)',
 )
 
-PLEA_TERMS = re.compile(r"\b(plead(?:ed|s)?|pled|guilty|convict(?:ed|ion)?)\b", re.I)
+PLEA_TERMS = re.compile(r"\b(plead(?:ed|s)?|pled|admit(?:s|ted)?|guilty|convict(?:ed|ion)?)\b", re.I)
 TRAFFICKING_TERMS = re.compile(r"\b(?:human|sex)[ -]?trafficking\b|trafficking ring", re.I)
-OFFENSE_TERMS = re.compile(r"transport(?:ing|ation)? (?:a person |women? )?for (?:the purposes? of )?prostitution", re.I)
+OFFENSE_TERMS = re.compile(
+    r"\btransport(?:ing|ation)?\s+(?:(?:(?:a|one)\s+)?(?:person|people|individuals?|woman|women)\s+)?"
+    r"for (?:the purposes? of )?prostitution\b|\btransportation\s+in service of prostitution\b",
+    re.I,
+)
 DISPOSITION_TERMS = re.compile(r"\b(?:sentenc(?:e|ed|ing)|probation|prison)\b", re.I)
 PROFESSIONAL_TERMS = re.compile(r"\b(?:mercer|okemos|ccbhc|healthcare|health care|behavioral health)\b", re.I)
 PAGE_MATERIAL_TERMS = re.compile(
@@ -47,12 +52,13 @@ PAGE_CONTEXT_ANCHORS = re.compile(
     re.I,
 )
 SHARED_NAME_TERMS = re.compile(r"\bjon(?:\s+(?:g\.?|granger))?\s+villasurda\b", re.I)
+SUBJECT_NAME_TERMS = re.compile(r"\bvillasurda\b", re.I)
 DISTINGUISHED_NAME_TERMS = re.compile(
     r"\bjon(?:\s+(?:g\.?|granger))?\s+villasurda,?\s+(?:sr|jr)\.?\b|"
     r"\bjon\s+granger\s+villasurda\b",
     re.I,
 )
-SNAPSHOT_VERSION = 2
+SNAPSHOT_VERSION = 3
 SKIPPED_PAGE_CHROME = frozenset({
     "aside", "button", "dialog", "footer", "form", "header", "iframe",
     "nav", "noscript", "script", "style", "svg", "template",
@@ -156,7 +162,12 @@ class RelevantPageParser(HTMLParser):
             attributes.get(name) or ""
             for name in ("id", "class", "aria-label", "aria-roledescription", "data-testid")
         )
-        if role in ("banner", "complementary", "contentinfo", "navigation") or PAGE_CHROME_HINTS.search(descriptor):
+        primary_article = tag == "article" and re.search(
+            r"\b(?:full-view|hentry|post-\d+)\b", descriptor, re.I
+        )
+        if role in ("banner", "complementary", "contentinfo", "navigation") or (
+            PAGE_CHROME_HINTS.search(descriptor) and not primary_article
+        ):
             if tag not in VOID_TAGS:
                 self.dynamic_skip_tag = tag
                 self.dynamic_skip_depth = 1
@@ -218,7 +229,10 @@ def relevant_context(text, term="villasurda", radius=280):
 
 def material_contexts(text, radius=360, limit=20):
     """Keep stable legal/identity sentences and drop navigation boilerplate."""
-    sentences = [normalized(sentence) for sentence in re.split(r"\n+|(?<=[.!?])\s+", text)]
+    sentences = [
+        normalized(sentence)
+        for sentence in re.split(r"\n+|(?<!\b[A-Za-z]\.)(?<=[.!?])\s+", text)
+    ]
     contexts = []
     for sentence in sentences:
         if not sentence or not PAGE_CONTEXT_ANCHORS.search(sentence):
@@ -300,9 +314,52 @@ def review_signals(text):
     return issues, priority
 
 
+def priority_for_review_issues(issues):
+    """Recompute priority after a headline-only signal is removed."""
+    priority = "low"
+    for issue in issues:
+        if issue.startswith("Jurisdiction check:"):
+            candidate = "critical"
+        elif issue.startswith((
+            "Shared-name ambiguity:",
+            "Plea-characterization check:",
+            "Disposition check:",
+        )):
+            candidate = "high"
+        elif issue.startswith((
+            "Framing check:",
+            "Body-context check:",
+            "Generic/co-defendant headline:",
+        )):
+            candidate = "medium"
+        else:
+            candidate = "low"
+        priority = max_priority(priority, candidate)
+    return priority
+
+
 def classify_news_item(item):
     """Assign a review priority without asserting that publication text is false."""
-    issues, priority = review_signals(item.get("title", ""))
+    title = item.get("title", "")
+    issues, priority = review_signals(title)
+
+    # Google News RSS exposes the result headline, not the article body. A
+    # generic co-defendant or ring headline can therefore look like a
+    # subject-specific plea mischaracterization even when the linked article
+    # accurately identifies the separate offense. Keep the result in the
+    # inventory, but require body verification before creating a correction
+    # candidate or assigning high priority.
+    generic_case_signal = bool(
+        TRAFFICKING_TERMS.search(title)
+        or OFFENSE_TERMS.search(title)
+        or (PLEA_TERMS.search(title) and DISPOSITION_TERMS.search(title))
+    )
+    if generic_case_signal and not SUBJECT_NAME_TERMS.search(title):
+        issues = [
+            "Generic/co-defendant headline: the result does not name Jon Villasurda; verify the full article body before treating it as a subject-specific alert.",
+            *issues,
+        ]
+        priority = "low"
 
     if not issues:
         issues.append("New exact-name result; review for identity accuracy and relevance.")
@@ -326,10 +383,34 @@ def classify_page_change(snapshot, previous=None):
         snapshot.get("og_description", ""),
         *snapshot.get("contexts", []),
     ))))
+    body_text = normalized(" ".join(filter(None, (
+        snapshot.get("description", ""),
+        snapshot.get("og_description", ""),
+        *snapshot.get("contexts", []),
+    ))))
     heading_issues, heading_priority = review_signals(headings)
     full_issues, full_priority = review_signals(full_text)
+
+    # A watched page gives us article/metadata context that Google News RSS
+    # does not. If that context names the specific prostitution-transportation
+    # count, a broad headline should remain a clarification signal, but should
+    # not by itself produce the high-priority plea-characterization alert.
+    if OFFENSE_TERMS.search(body_text):
+        filtered_heading_issues = [
+            issue for issue in heading_issues
+            if not issue.startswith("Plea-characterization check:")
+        ]
+        if len(filtered_heading_issues) != len(heading_issues):
+            heading_issues = filtered_heading_issues
+            heading_priority = priority_for_review_issues(heading_issues)
     issues = list(heading_issues)
     issues.extend(issue for issue in full_issues if issue not in issues)
+    if OFFENSE_TERMS.search(body_text) and any(
+        issue.startswith("Framing check:") for issue in full_issues
+    ):
+        issues.append(
+            "Body-context check: the page text names the specific prostitution-transportation count; review the broader headline in context before outreach."
+        )
     priority = max_priority(heading_priority, full_priority)
     if not issues:
         issues.append("Material legal or identity language changed on a watched publication page; review the before-and-after evidence.")

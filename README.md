@@ -16,6 +16,7 @@ The Jekyll site presents a consistent professional profile, selected public work
 - Duplicate-safe recovery gating: later scheduled runs execute only when no earlier scheduled run has completed or remains active that day
 - A persistent assigned status issue confirming each completed scan and identifying whether it was a primary, recovery, or manual run
 - Historical CSV inventory, headline-change detection, stable article-body monitoring that excludes changing newsroom navigation, workflow summaries, and approval-gated correction-request drafts for new reputation findings or material watched-page changes; actionable issue entries link to prefilled Gmail drafts
+- Body-aware triage that keeps generic co-defendant headlines in the inventory without treating them as subject-specific high-priority alerts, while watched-page text can preserve a focused identity or disposition review when it supplies the missing context
 - Monitoring-state recovery from both the Actions cache and retained run artifacts, preventing a routine cache miss from silently discarding observation history
 - A daily review issue for Search Console, AI visibility, current references, and workflow continuity
 
