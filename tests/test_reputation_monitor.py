@@ -31,6 +31,7 @@ class ReputationMonitorTests(unittest.TestCase):
         self.assertIn("prostitution", joined)
         self.assertIn("trafficking", joined)
         self.assertIn("headline", joined)
+        self.assertIn('"Jon G. Villasurda"', joined)
 
     def test_parses_google_news_items(self):
         xml = """<rss><channel><item>
@@ -59,6 +60,13 @@ class ReputationMonitorTests(unittest.TestCase):
         }
         self.assertTrue(is_relevant_news_item(item))
 
+    def test_keeps_transportation_headline_that_uses_admits_and_omits_name(self):
+        item = {
+            "title": "Clinton Twp. man admits to transporting woman for prostitution",
+            "source": "Macomb Daily",
+        }
+        self.assertTrue(is_relevant_news_item(item))
+
     def test_keeps_professional_headline_that_omits_name(self):
         item = {
             "title": "Mercer leader discusses behavioral health access in Michigan",
@@ -77,6 +85,13 @@ class ReputationMonitorTests(unittest.TestCase):
         self.assertIn("Jon Villasurda Sr.", snapshot["contexts"][0])
         self.assertEqual(64, len(snapshot["fingerprint"]))
 
+    def test_page_snapshot_keeps_primary_article_with_latest_category(self):
+        html = """<main><article class="post-123 full-view hentry category-latest-headlines">
+        <p>Jon Villasurda Sr. pleaded guilty to transporting a person for prostitution.</p>
+        </article></main>"""
+        snapshot = page_snapshot("Example", "https://example.com", "https://example.com", html)
+        self.assertTrue(any("transporting a person for prostitution" in context for context in snapshot["contexts"]))
+
     def test_material_contexts_drop_unrelated_navigation_text(self):
         text = (
             "Top stories Weather Sports. Jon Villasurda Sr. pleaded guilty to transporting a person for prostitution. "
@@ -86,6 +101,13 @@ class ReputationMonitorTests(unittest.TestCase):
         self.assertEqual(2, len(contexts))
         self.assertTrue(any("transporting a person for prostitution" in context for context in contexts))
         self.assertTrue(all("Top stories" not in context for context in contexts))
+
+    def test_material_contexts_preserve_middle_initial_with_name(self):
+        contexts = material_contexts(
+            "Another co-defendant, Jon G. Villasurda of Clinton Township, pleaded guilty "
+            "to transporting a person for prostitution in July."
+        )
+        self.assertTrue(any("Jon G. Villasurda" in context for context in contexts))
 
     def test_page_fingerprint_ignores_unrelated_dynamic_text(self):
         template = """<html><head><title>Stable report</title></head><body>
@@ -290,8 +312,32 @@ class ReputationMonitorTests(unittest.TestCase):
             "query": '"Jon Villasurda"',
         }
         classified = classify_news_item(item)
+        self.assertEqual("low", classified["priority"])
+        self.assertIn("generic/co-defendant", classified["issues"][0].lower())
+
+    def test_subject_specific_ambiguous_trafficking_plea_headline_remains_high(self):
+        item = {
+            "title": "Jon Villasurda pleads guilty in human trafficking ring",
+            "link": "https://example.com/story",
+            "source": "Example",
+            "published": "2026-08-01",
+            "query": '"Jon Villasurda"',
+        }
+        classified = classify_news_item(item)
         self.assertEqual("high", classified["priority"])
-        self.assertIn("plea-characterization", classified["issues"][0].lower())
+        self.assertTrue(any("plea-characterization" in issue.lower() for issue in classified["issues"]))
+
+    def test_generic_co_defendant_disposition_headline_is_not_high_priority(self):
+        item = {
+            "title": "Ringleader behind Metro Detroit sex trafficking ring sentenced to prison",
+            "link": "https://example.com/story",
+            "source": "Example",
+            "published": "2026-09-04",
+            "query": '"Jon Villasurda"',
+        }
+        classified = classify_news_item(item)
+        self.assertEqual("low", classified["priority"])
+        self.assertIn("generic/co-defendant", classified["issues"][0].lower())
 
     def test_classifies_watched_page_headline_separately_from_precise_body(self):
         snapshot = page_snapshot(
@@ -302,8 +348,9 @@ class ReputationMonitorTests(unittest.TestCase):
             <body><article><p>Jon Villasurda Sr. pleaded guilty to transporting a person for prostitution.</p></article></body></html>""",
         )
         classified = classify_page_change(snapshot)
-        self.assertEqual("high", classified["priority"])
-        self.assertTrue(any("plea-characterization" in issue.lower() for issue in classified["issues"]))
+        self.assertEqual("medium", classified["priority"])
+        self.assertFalse(any("plea-characterization" in issue.lower() for issue in classified["issues"]))
+        self.assertTrue(any("body-context" in issue.lower() for issue in classified["issues"]))
 
     def test_changed_watched_page_generates_approval_gated_draft(self):
         rss = "<rss><channel></channel></rss>"
